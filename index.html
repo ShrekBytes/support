@@ -7,20 +7,22 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230e0c0a'/%3E%3Ctext x='16' y='22' font-size='18' text-anchor='middle' font-family='serif' fill='%23f3f0e8'%3E%24%3C/text%3E%3C/svg%3E"/>
 <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
 <style>
+html{overflow-x:hidden;}
 *{box-sizing:border-box;margin:0;padding:0}
-
-html,body{height:100%;}
 
 body{
   background:#f3f0e8;
   min-height:100vh;
-  display:flex;align-items:center;justify-content:center;
-  padding:28px 20px;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:40px 20px;
   font-family:'Geist Mono',monospace;
   color:#0e0c0a;
 }
+@media(min-height:780px){
+  body{align-items:center;padding:28px 20px;}
+}
 
-.wrap{width:100%;max-width:480px;}
+.wrap{width:100%;max-width:480px;min-width:0;overflow:hidden;}
 
 /* ── head ── */
 .head{margin-bottom:28px;}
@@ -46,8 +48,8 @@ h1{
   padding:7px 10px 8px;
 }
 .th{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:#5c5650;font-weight:600;}
-.th-coin{width:76px;flex-shrink:0;}
-.th-net{min-width:104px;text-align:center;}
+.th-coin{width:66px;flex-shrink:1;min-width:0;}
+.th-net{width:96px;flex-shrink:0;text-align:center;}
 .th-addr{flex:1;}
 
 /* ── coin groups ── */
@@ -56,7 +58,7 @@ h1{
 .coin-group:last-child{border-bottom:none;}
 
 /* ── coin cell (icon + ticker) ── */
-.coin-cell{display:flex;align-items:center;gap:6px;width:76px;flex-shrink:0;}
+.coin-cell{display:flex;align-items:center;gap:6px;width:66px;min-width:0;flex-shrink:1;}
 .coin-cell .cname{font-size:.75rem;color:#0e0c0a;letter-spacing:.02em;font-weight:600;}
 
 /* ── network row ── */
@@ -75,12 +77,15 @@ h1{
 /* ── network pill ── */
 .npill{
   display:inline-flex;align-items:center;
-  font-size:.65rem;font-weight:600;letter-spacing:.06em;
-  padding:3px 9px;border-radius:5px;
+  font-size:.65rem;font-weight:600;letter-spacing:.04em;
+  padding:3px 8px;border-radius:5px;
   white-space:nowrap;flex-shrink:0;
-  min-width:104px;justify-content:center;
+  width:96px;justify-content:center;
   text-transform:uppercase;
   background:#1c1916;color:#f3f0e8;
+}
+@media(max-width:380px){
+  .npill{width:84px;font-size:.6rem;padding:3px 6px;letter-spacing:.02em;}
 }
 
 /* ── address + copy ── */
