@@ -52,34 +52,15 @@ body{
   background:#0e0c0a;transform:translateY(-50%);
 }
 
-/* ── page transition: direction-aware horizontal slide ── */
-@view-transition{navigation:auto;}
-@media (prefers-reduced-motion:reduce){
-  ::view-transition-old(root),::view-transition-new(root){animation:none;}
-}
+/* ── page transition ── */
 @media (prefers-reduced-motion:no-preference){
-  /* Support → Projects: old page exits left, new page enters from the right */
-  ::view-transition-old(root){animation:vt-out-left .3s cubic-bezier(.22,1,.36,1) both;}
-  ::view-transition-new(root){animation:vt-in-right .3s cubic-bezier(.22,1,.36,1) both;}
-
-  /* Projects → Support: same slide, reverse direction */
-  :root:active-view-transition-type(slide-back){
-    &::view-transition-old(root){animation:vt-out-right .3s cubic-bezier(.22,1,.36,1) both;}
-    &::view-transition-new(root){animation:vt-in-left .3s cubic-bezier(.22,1,.36,1) both;}
-  }
-
-  /* Browsers without view transitions (e.g. Firefox): slide the new page in */
-  @supports not (view-transition-name:none){
-    html[data-slide] body{animation:page-in .3s cubic-bezier(.22,1,.36,1) both;}
-  }
+  @view-transition{navigation:auto;}
+  ::view-transition-old(root){animation:none;}
+  ::view-transition-new(root){animation:vt-slide .3s cubic-bezier(.22,1,.36,1) both;}
 }
-@keyframes vt-out-left{from{transform:translateX(0)}to{transform:translateX(-100%)}}
-@keyframes vt-in-right{from{transform:translateX(100%)}to{transform:translateX(0)}}
-@keyframes vt-out-right{from{transform:translateX(0)}to{transform:translateX(100%)}}
-@keyframes vt-in-left{from{transform:translateX(-100%)}to{transform:translateX(0)}}
-@keyframes page-in{
-  from{opacity:0;transform:translateX(var(--slide-from,24px))}
-  to{opacity:1;transform:none}
+@keyframes vt-slide{
+  from{transform:translateY(100%);}
+  to{transform:translateY(0);}
 }
 
 @media(max-width:719px){
@@ -156,22 +137,6 @@ h1{
 .foot a:hover{background:#dcd5c3;border-color:#bab3a6;}
 .foot a svg{display:block;}
 </style>
-<script>
-// Direction-aware page slide (see "page transition" styles)
-addEventListener('pagereveal',e=>{
-  let from;
-  try{from=new URL(navigation?.activation?.from?.url??document.referrer,location.href).pathname}
-  catch(_){return}
-  const cameFromProjects=from.endsWith('projects.html');
-  if(cameFromProjects===location.pathname.endsWith('projects.html'))return; // direct load, reload, or self-link
-  const t=cameFromProjects?'slide-back':'slide-fwd';
-  if(e.viewTransition)e.viewTransition.types.add(t);
-  else{ // no view transitions (e.g. Firefox): slide the new page in via CSS
-    document.documentElement.dataset.slide=t;
-    document.documentElement.style.setProperty('--slide-from',cameFromProjects?'-24px':'24px');
-  }
-});
-</script>
 </head>
 <body>
 <div class="shell">
