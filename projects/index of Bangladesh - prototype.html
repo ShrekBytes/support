@@ -1,0 +1,2210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DeshInfo — The Structured Index of Bangladesh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ====================================================================
+   DESIGN TOKENS
+   Concept: Bangladesh is a delta — rivers branching and rejoining.
+   That branching is the literal shape of "everything is connected,"
+   so it becomes the page's structural signature (see .delta-row).
+   Palette is cool ink/paper with two narrow, purposeful accents:
+   teal = interactive/trusted, clay = live/rising data. Gold is reserved
+   only for ratings. Nothing else gets color.
+   ==================================================================== */
+:root{
+  --ink:#1A2740; --ink-soft:#48536B; --ink-faint:#8993A6;
+  --paper:#F5F6F4; --card:#FFFFFF;
+  --line:#DEE2E3; --line-strong:#C7CDD0;
+  --teal:#0F6E72; --teal-dark:#0B585B; --teal-tint:#E9F2F1;
+  --clay:#BD5A30; --clay-tint:#F8EAE2;
+  --gold:#B8862F;
+  --r-sm:6px; --r-md:9px; --r-lg:13px;
+  --shadow-card:0 1px 2px rgba(26,39,64,.05), 0 1px 0 rgba(26,39,64,.04);
+  --shadow-float:0 14px 34px -16px rgba(26,39,64,.28);
+  --font-display:'IBM Plex Serif',serif; --font-body:'IBM Plex Sans',sans-serif; --font-mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{-webkit-text-size-adjust:100%;}
+body{font-family:var(--font-body); color:var(--ink); background:var(--paper); -webkit-font-smoothing:antialiased; line-height:1.5; font-size:15px; overflow-x:hidden;}
+h1,h2,h3,h4{font-family:var(--font-display); color:var(--ink); font-weight:600; letter-spacing:-0.01em;}
+a{color:inherit; text-decoration:none;}
+.mono{font-family:var(--font-mono);}
+.eyebrow-text{font-size:11.5px; text-transform:uppercase; letter-spacing:.09em; font-weight:600; color:var(--ink-soft);}
+img{max-width:100%; display:block;}
+.icon{width:18px; height:18px; stroke:currentColor; stroke-width:1.75; fill:none; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0;}
+.container{max-width:1320px; margin:0 auto; padding:0 32px;}
+button{font-family:inherit; cursor:pointer;}
+.hidden{display:none !important;}
+.dotgrid{background-image:radial-gradient(circle, var(--line-strong) 1px, transparent 1px); background-size:13px 13px; background-color:#EFF1EF;}
+.table-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+
+/* ============ BUTTONS ============ */
+.btn{display:inline-flex; align-items:center; gap:8px; font-weight:600; font-size:13.8px; padding:10px 18px; border-radius:var(--r-sm); border:1px solid transparent; transition:all .14s ease; white-space:nowrap; font-family:var(--font-body);}
+.btn-primary{background:var(--teal); color:#fff;}
+.btn-primary:hover{background:var(--teal-dark);}
+.btn-outline{background:#fff; border-color:var(--line-strong); color:var(--ink);}
+.btn-outline:hover{border-color:var(--ink); background:var(--paper);}
+.btn-sm{padding:7px 13px; font-size:12.8px;}
+.icon-btn{width:36px; height:36px; display:flex; align-items:center; justify-content:center; border-radius:50%; border:1px solid var(--line-strong); background:#fff; color:var(--ink); position:relative; flex-shrink:0;}
+.icon-btn:hover{border-color:var(--ink);}
+
+/* ============ UTILITY BAR + NAVBAR ============ */
+.utility-bar{background:var(--ink); color:#A9B2C2; font-size:12px;}
+.utility-inner{max-width:1320px; margin:0 auto; padding:7px 32px; display:flex; justify-content:space-between; align-items:center;}
+.utility-inner .links{display:flex; gap:18px;}
+.utility-inner a:hover{color:#fff;}
+.navbar{position:sticky; top:0; z-index:50; background:#fff; border-bottom:1px solid var(--line);}
+.navbar-inner{max-width:1320px; margin:0 auto; padding:16px 32px; display:flex; align-items:center; gap:30px;}
+.logo{display:flex; align-items:center; gap:10px; font-family:var(--font-display); font-weight:700; font-size:20px; color:var(--ink); flex-shrink:0;}
+.logo .accent{color:var(--teal);}
+.nav-search{flex:1; max-width:460px; display:flex; align-items:center; background:#fff; border:1.5px solid var(--ink); border-radius:var(--r-sm); padding:0 4px 0 13px;}
+.nav-search:focus-within{box-shadow:0 0 0 3px var(--teal-tint); border-color:var(--teal);}
+.nav-search .icon{color:var(--ink-faint); width:16px; height:16px;}
+.nav-search input{border:none; background:transparent; outline:none; flex:1; padding:9px 8px; font-size:13.8px; font-family:var(--font-body); color:var(--ink); min-width:0;}
+.nav-search select{border:none; background:transparent; font-size:12.5px; color:var(--ink-soft); padding:8px 8px; border-left:1px solid var(--line); outline:none; font-family:var(--font-body);}
+.nav-links{display:flex; align-items:center; gap:22px; flex-shrink:0;}
+.nav-link{display:flex; align-items:center; gap:6px; font-size:12.8px; font-weight:600; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); padding:4px 0; border-bottom:2px solid transparent;}
+.nav-link:hover{color:var(--ink); border-color:var(--clay);}
+.nav-link .icon{width:14px; height:14px;}
+.nav-right{display:flex; align-items:center; gap:10px; flex-shrink:0;}
+.badge-dot{position:absolute; top:5px; right:6px; width:6px; height:6px; border-radius:50%; background:var(--clay); border:1.5px solid #fff;}
+.avatar{width:34px; height:34px; border-radius:50%; background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; font-family:var(--font-display); flex-shrink:0;}
+.hamburger-btn{display:none;}
+.mobile-menu{display:none; border-top:1px solid var(--line); background:#fff; padding:16px 20px 20px;}
+.mobile-menu.open{display:block;}
+.mobile-menu .nav-search{display:flex; max-width:none; margin-bottom:16px;}
+.mobile-menu-links{display:flex; flex-direction:column;}
+.mobile-menu-links .nav-link{display:flex; text-transform:none; font-size:14.5px; font-weight:600; padding:13px 2px; border-bottom:1px solid var(--line); color:var(--ink);}
+.mobile-menu-links .nav-link .icon{width:16px; height:16px; color:var(--ink-faint);}
+.mobile-menu .btn{width:100%; justify-content:center; margin-top:14px;}
+
+/* ============ PROTOTYPE SWITCHER ============ */
+.proto-bar{background:#11192B; padding:10px 32px;}
+.proto-inner{max-width:1320px; margin:0 auto; display:flex; align-items:center; gap:9px; flex-wrap:wrap;}
+.proto-label{font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:#7C879C; font-weight:600; margin-right:4px; font-family:var(--font-mono); flex-shrink:0;}
+.proto-pill{padding:6px 13px; border-radius:100px; font-size:12.5px; font-weight:600; color:#AEB7C7; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); font-family:var(--font-body); flex-shrink:0;}
+.proto-pill:hover{background:rgba(255,255,255,.1); color:#fff;}
+.proto-pill.active{background:var(--teal); color:#fff; border-color:var(--teal);}
+
+/* ============ HERO ============ */
+.hero{position:relative; overflow:hidden; padding:80px 32px 64px; background:var(--card); border-bottom:1px solid var(--line);}
+.hero-watermark{position:absolute; top:0; right:-4%; width:54%; height:100%; opacity:.5; pointer-events:none;}
+.hero-inner{max-width:760px; margin:0 auto; text-align:center; position:relative; z-index:2;}
+.eyebrow{display:inline-flex; align-items:center; gap:8px; margin-bottom:22px;}
+.eyebrow .dot{width:7px; height:7px; border-radius:50%; background:var(--clay);}
+.hero h1{font-size:48px; line-height:1.12; margin-bottom:16px; font-weight:600;}
+.hero h1 .accent{color:var(--teal);}
+.hero p.sub{font-size:16.5px; color:var(--ink-soft); max-width:540px; margin:0 auto 34px; line-height:1.6;}
+.search-mega{display:flex; align-items:stretch; background:#fff; border:1.5px solid var(--ink); border-radius:var(--r-md); padding:5px; max-width:640px; margin:0 auto;}
+.search-mega select{border:none; background:transparent; font-size:13.5px; font-weight:600; color:var(--ink); padding:0 13px; border-right:1px solid var(--line); outline:none; font-family:var(--font-body);}
+.search-mega .field{flex:1; display:flex; align-items:center; gap:10px; padding:0 13px; min-width:0;}
+.search-mega .field .icon{color:var(--ink-faint);}
+.search-mega input{border:none; outline:none; flex:1; font-size:14.8px; padding:12px 0; font-family:var(--font-body); color:var(--ink); min-width:0;}
+.search-mega button{background:var(--teal); color:#fff; border:none; border-radius:6px; padding:0 22px; font-weight:700; font-size:13.5px; display:flex; align-items:center; justify-content:center; gap:7px;}
+.search-mega button:hover{background:var(--teal-dark);}
+.trending-row{margin-top:22px; display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; font-size:13px;}
+.trending-row .label{color:var(--ink-faint); font-weight:500;}
+.chip-link{padding:6px 12px; background:var(--paper); border-radius:100px; color:var(--ink-soft); font-weight:500; border:1px solid var(--line);}
+.chip-link:hover{border-color:var(--ink); color:var(--ink);}
+
+/* ============ SECTION HEADERS ============ */
+.section{padding:54px 32px;}
+.section-head{display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:24px; gap:20px; border-bottom:1px solid var(--line); padding-bottom:16px;}
+.section-head h2{font-size:23px;}
+.section-head p{color:var(--ink-soft); font-size:13.5px; margin-top:5px; font-family:var(--font-body); font-weight:400;}
+.view-all{display:flex; align-items:center; gap:5px; font-size:13px; font-weight:600; color:var(--teal); flex-shrink:0;}
+
+/* ============ QUICK CATEGORIES ============ */
+.cat-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:1px; background:var(--line); border:1px solid var(--line);}
+.cat-card{background:#fff; padding:20px 17px; display:flex; flex-direction:column; gap:13px; transition:all .14s; border-bottom:2px solid transparent;}
+.cat-card:hover{border-bottom-color:var(--clay); background:var(--paper);}
+.cat-card .ic-wrap{width:38px; height:38px; border-radius:var(--r-sm); border:1.5px solid var(--ink); display:flex; align-items:center; justify-content:center; color:var(--ink);}
+.cat-card h4{font-size:14.5px; font-weight:600; font-family:var(--font-body);}
+.cat-card .count{font-size:12px; color:var(--ink-faint); font-family:var(--font-mono);}
+
+/* ============ STATS STRIP ============ */
+.stats-strip{background:var(--ink); padding:0;}
+.stats-grid{max-width:1320px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr);}
+.stat-block{padding:34px 30px; border-left:1px solid rgba(255,255,255,.12); position:relative;}
+.stat-block:first-child{border-left:none;}
+.stat-block::before{content:''; position:absolute; top:0; left:-1px; width:24px; height:2px; background:var(--clay);}
+.stat-block:nth-child(2)::before{background:#3FA8AC;}
+.stat-block:nth-child(3)::before{background:var(--gold);}
+.stat-block:nth-child(4)::before{background:var(--clay);}
+.stat-block .num{font-family:var(--font-mono); font-size:30px; font-weight:600; color:#fff; letter-spacing:-0.01em;}
+.stat-block .lbl{font-size:12px; color:#8A93A8; margin-top:6px; text-transform:uppercase; letter-spacing:.06em; font-weight:500;}
+
+/* ============ PULSE GRID ============ */
+.pulse-grid{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line);}
+.pulse-card{background:#fff; padding:22px;}
+.pulse-card h3{font-size:14.5px; display:flex; align-items:center; gap:8px; margin-bottom:15px; font-family:var(--font-body); font-weight:700;}
+.pulse-card h3 .icon{width:16px; height:16px; color:var(--teal);}
+.pulse-row{display:flex; align-items:center; gap:12px; padding:10px 0; border-top:1px solid var(--line);}
+.pulse-row:first-of-type{border-top:none; padding-top:0;}
+.pulse-rank{width:16px; font-family:var(--font-mono); color:var(--ink-faint); font-size:12.5px; font-weight:600;}
+.pulse-body{flex:1; min-width:0;}
+.pulse-title{font-size:13.5px; font-weight:600; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.pulse-meta{font-size:11.8px; color:var(--ink-faint); margin-top:1px;}
+.pulse-trend{display:flex; align-items:center; gap:4px; font-size:12px; font-weight:600; font-family:var(--font-mono); flex-shrink:0;}
+.pulse-trend.up{color:var(--clay);} .pulse-trend.down{color:var(--teal);}
+.pulse-trend .icon{width:13px; height:13px;}
+.mini-avatar{width:28px; height:28px; border-radius:50%; background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:700; flex-shrink:0; font-family:var(--font-mono);}
+
+/* ============ ENTITY CARDS (compact grid / scroll) ============ */
+.scroll-row{display:flex; gap:1px; overflow-x:auto; padding-bottom:10px; background:var(--line); border:1px solid var(--line); -webkit-overflow-scrolling:touch;}
+.entity-card{background:#fff; overflow:hidden; flex-shrink:0; width:250px; transition:all .14s;}
+.entity-card:hover{background:var(--paper);}
+.ph{position:relative; height:128px; display:flex; align-items:center; justify-content:center; color:var(--ink-soft); background-image:radial-gradient(circle, var(--line-strong) 1px, transparent 1px); background-size:12px 12px; background-color:#EFF1EF;}
+.ph .icon{width:28px; height:28px; opacity:.55; color:var(--ink);}
+.ec-type{position:absolute; top:9px; left:9px; background:var(--ink); color:#fff; font-size:10px; font-weight:600; padding:3px 8px; text-transform:uppercase; letter-spacing:.05em; font-family:var(--font-mono);}
+.ec-body{padding:15px;}
+.ec-title-row{display:flex; align-items:center; gap:6px; margin-bottom:5px;}
+.ec-title{font-size:14.5px; font-weight:700; font-family:var(--font-body);}
+.verified-mark{width:14px; height:14px; color:var(--teal); flex-shrink:0;}
+.ec-meta{font-size:12px; color:var(--ink-soft); display:flex; align-items:center; gap:5px; margin-bottom:9px;}
+.ec-meta .icon{width:12px; height:12px; color:var(--ink-faint); flex-shrink:0;}
+.stars{display:inline-flex; align-items:center; gap:1px;}
+.stars .icon{width:13px; height:13px;}
+.rating-line{display:flex; align-items:center; gap:7px; font-size:12px; margin-bottom:10px; flex-wrap:wrap;}
+.rating-num{font-weight:700; font-size:12.5px; font-family:var(--font-mono);}
+.rating-count{color:var(--ink-faint); font-family:var(--font-mono);}
+.tag-row{display:flex; gap:6px; flex-wrap:wrap;}
+.tag{background:var(--paper); border:1px solid var(--line); color:var(--ink-soft); font-size:11px; font-weight:500; padding:3px 8px; border-radius:100px;}
+.tag.clay{background:var(--clay-tint); color:var(--clay); border-color:transparent;}
+.tag.teal{background:var(--teal-tint); color:var(--teal); border-color:transparent; font-weight:700;}
+
+/* ============ RICH RESULT ROW (search results / offering lists) ============
+   The dense, scannable "dossier row" pattern: thumbnail, facts, optional
+   context photo. Used anywhere we list one entity type against another. */
+.rrow{display:flex; gap:18px; background:#fff; border:1px solid var(--line); border-radius:var(--r-lg); padding:18px; margin-bottom:14px; box-shadow:var(--shadow-card); transition:border-color .14s;}
+.rrow:hover{border-color:var(--line-strong);}
+.rrow:last-child{margin-bottom:0;}
+.rrow-thumb{width:92px; height:92px; border-radius:var(--r-md); flex-shrink:0; display:flex; align-items:center; justify-content:center; color:var(--ink); background-image:radial-gradient(circle, var(--line-strong) 1px, transparent 1px); background-size:11px 11px; background-color:#EFF1EF;}
+.rrow-thumb .icon{width:26px; height:26px; opacity:.55;}
+.rrow-body{flex:1; min-width:0;}
+.rrow-title-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px;}
+.rrow-title{font-size:15.5px; font-weight:700; font-family:var(--font-body);}
+.rrow-desc{font-size:12.8px; color:var(--ink-soft); line-height:1.55; margin:7px 0 11px; max-width:640px;}
+.stat-chip-row{display:flex; gap:8px; flex-wrap:wrap;}
+.stat-chip{display:flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:var(--r-sm); padding:6px 10px; background:var(--paper);}
+.stat-chip .icon{width:14px; height:14px; color:var(--ink-faint); flex-shrink:0;}
+.stat-chip .sc-label{font-size:9.5px; color:var(--ink-faint); text-transform:uppercase; letter-spacing:.04em; font-family:var(--font-mono); margin-bottom:1px;}
+.stat-chip .sc-value{font-size:12.3px; font-weight:700; color:var(--ink);}
+.rrow-photo{width:200px; border-radius:var(--r-md); flex-shrink:0; background-image:radial-gradient(circle, var(--line-strong) 1px, transparent 1px); background-size:11px 11px; background-color:#EFF1EF; display:flex; align-items:center; justify-content:center; color:var(--ink-faint);}
+.rrow-photo .icon{width:30px; height:30px; opacity:.4;}
+.section-foot-link{margin-top:4px;}
+
+/* teacher / person row variant */
+.trow{display:flex; gap:18px; background:#fff; border:1px solid var(--line); border-radius:var(--r-lg); padding:18px; margin-bottom:14px; box-shadow:var(--shadow-card);}
+.trow:last-child{margin-bottom:0;}
+.trow-photo{width:74px; height:74px; border-radius:50%; flex-shrink:0; background-image:radial-gradient(circle, var(--line-strong) 1px, transparent 1px); background-size:10px 10px; background-color:#EFF1EF; display:flex; align-items:center; justify-content:center; color:var(--ink);}
+.trow-photo .icon{width:24px; height:24px; opacity:.55;}
+.trow-body{flex:1; min-width:0;}
+.tstat-row{display:flex; gap:22px; flex-wrap:wrap; margin:9px 0;}
+.tstat{display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--ink-soft);}
+.tstat .icon{width:14px; height:14px; color:var(--ink-faint); flex-shrink:0;}
+.tstat b{color:var(--ink); font-weight:700; font-family:var(--font-mono);}
+
+/* ============ CTA BAND ============ */
+.cta-band{background:var(--ink); border-radius:var(--r-lg); padding:48px 52px; display:flex; align-items:center; justify-content:space-between; gap:30px; color:#fff; position:relative; overflow:hidden; border:1px solid var(--ink);}
+.cta-band .delta-deco{position:absolute; right:0; top:0; height:100%; width:42%; opacity:.5;}
+.cta-band h2{color:#fff; font-size:25px; margin-bottom:8px;}
+.cta-band p{color:#A9B2C2; font-size:14px; max-width:430px;}
+.cta-band .btn-primary{background:var(--clay);}
+.cta-band .btn-primary:hover{background:#A14B26;}
+.cta-band .btn-outline{background:transparent; border-color:rgba(255,255,255,.35); color:#fff;}
+.cta-band .btn-outline:hover{background:rgba(255,255,255,.08);}
+.cta-actions{display:flex; gap:12px; flex-shrink:0; position:relative; z-index:2;}
+
+/* ============ FOOTER ============ */
+.footer{background:var(--ink); color:#A9B2C2; padding:54px 32px 22px;}
+.footer-grid{max-width:1320px; margin:0 auto; display:grid; grid-template-columns:1.6fr 1fr 1fr 1fr 1fr; gap:30px; padding-bottom:32px; border-bottom:1px solid rgba(255,255,255,.1);}
+.footer h5{color:#fff; font-size:12px; font-weight:600; margin-bottom:13px; text-transform:uppercase; letter-spacing:.06em; font-family:var(--font-body);}
+.footer ul{list-style:none;}
+.footer li{margin-bottom:9px; font-size:13px; color:#8A93A8;}
+.footer li:hover{color:#fff;}
+.footer-bottom{max-width:1320px; margin:16px auto 0; display:flex; justify-content:space-between; font-size:12px; color:#5E6781; font-family:var(--font-mono); flex-wrap:wrap; gap:6px;}
+
+/* ============ BREADCRUMB ============ */
+.breadcrumb{display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--ink-soft); padding:18px 32px 0; max-width:1320px; margin:0 auto; font-family:var(--font-mono); flex-wrap:wrap;}
+.breadcrumb a:hover{color:var(--teal);}
+.breadcrumb .icon{width:12px; height:12px; color:var(--ink-faint);}
+
+/* ============ SEARCH RESULTS PAGE ============ */
+.search-hero{padding:22px 32px 0;}
+.search-hero .search-mega{max-width:100%; margin:0;}
+.filter-tabs{display:flex; gap:4px; padding:18px 32px 0; max-width:1320px; margin:0 auto; flex-wrap:wrap; border-bottom:1px solid var(--line); margin-top:14px;}
+.ftab{padding:10px 15px; font-size:13.2px; font-weight:600; color:var(--ink-soft); border-bottom:2px solid transparent; margin-bottom:-1px; white-space:nowrap;}
+.ftab.active{color:var(--ink); border-color:var(--clay);}
+.ftab:hover{color:var(--ink);}
+.results-layout{max-width:1320px; margin:0 auto; padding:30px 32px 70px; display:grid; grid-template-columns:226px 1fr; gap:34px; align-items:start;}
+.filter-sidebar{background:#fff; border:1px solid var(--line); border-radius:var(--r-md); padding:19px; position:sticky; top:90px;}
+.filter-group{padding-bottom:17px; margin-bottom:17px; border-bottom:1px solid var(--line);}
+.filter-group:last-child{border:none; margin:0; padding:0;}
+.filter-group h6{font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); margin-bottom:11px; font-family:var(--font-mono);}
+.check-row{display:flex; align-items:center; gap:9px; font-size:13.3px; color:var(--ink); padding:6px 0; cursor:pointer;}
+.check-row input{accent-color:var(--teal); width:14px; height:14px; flex-shrink:0;}
+.check-row .cnt{margin-left:auto; color:var(--ink-faint); font-size:11.5px; font-family:var(--font-mono);}
+.result-section{margin-bottom:36px;}
+.result-section-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:13px;}
+.result-section-head h3{font-size:16px; display:flex; align-items:center; gap:8px; font-family:var(--font-body); font-weight:700;}
+.result-section-head h3 .icon{width:17px; height:17px; color:var(--teal);}
+.result-section-head .cnt-badge{background:var(--paper); border:1px solid var(--line); color:var(--ink-soft); font-size:11.5px; padding:2px 8px; border-radius:100px; font-weight:600; font-family:var(--font-mono);}
+.filter-toggle-btn{display:none; margin-bottom:16px;}
+
+/* ============ CATEGORY (RESTAURANTS) PAGE ============ */
+.cat-header{padding:26px 32px 0;}
+.cat-header h1{font-size:28px; margin-bottom:6px;}
+.cat-header p{color:var(--ink-soft); font-size:14px;}
+.chip-filter-row{display:flex; gap:8px; flex-wrap:wrap; margin-top:18px;}
+.chip-filter{padding:7px 14px; border-radius:100px; font-size:12.8px; font-weight:600; border:1px solid var(--line-strong); color:var(--ink-soft); background:#fff;}
+.chip-filter.active{background:var(--ink); color:#fff; border-color:var(--ink);}
+.cat-layout{max-width:1320px; margin:0 auto; padding:24px 32px 70px; display:grid; grid-template-columns:226px 1fr 370px; gap:28px; align-items:start;}
+.result-bar{display:flex; align-items:center; justify-content:space-between; margin-bottom:15px; gap:12px; flex-wrap:wrap;}
+.result-bar .count{font-size:14px; font-weight:600;}
+.result-bar select{border:1px solid var(--line-strong); border-radius:var(--r-sm); padding:8px 11px; font-size:12.5px; font-family:var(--font-body); color:var(--ink); background:#fff;}
+.rest-list{display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line);}
+.rest-card{display:flex; gap:15px; background:#fff; padding:14px; transition:.14s;}
+.rest-card:hover{background:var(--paper);}
+.rest-thumb{width:118px; height:98px; flex-shrink:0; display:flex; align-items:center; justify-content:center; color:var(--ink); position:relative; background-image:radial-gradient(circle, var(--line-strong) 1px, transparent 1px); background-size:12px 12px; background-color:#EFF1EF;}
+.rest-thumb .icon{width:24px; height:24px; opacity:.5;}
+.rest-info{flex:1; min-width:0;}
+.rest-top{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; flex-wrap:wrap;}
+.rest-top h4{font-size:15.5px; display:flex; align-items:center; gap:6px;}
+.status-dot{display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:600; color:var(--teal); font-family:var(--font-mono);}
+.status-dot .dot{width:6px; height:6px; border-radius:50%; background:var(--teal);}
+.rest-desc{font-size:12.8px; color:var(--ink-soft); margin:6px 0 9px; line-height:1.5;}
+.price-badge{font-family:var(--font-mono); font-weight:700; font-size:12px; color:var(--ink); background:var(--paper); border:1px solid var(--line); padding:3px 7px; border-radius:var(--r-sm);}
+.map-panel{position:sticky; top:90px; background-image:radial-gradient(circle, var(--line-strong) 1px, transparent 1px); background-size:16px 16px; background-color:#EFF1EF; border:1px solid var(--line); border-radius:var(--r-md); height:560px; position:relative; overflow:hidden;}
+.map-pin{position:absolute; width:28px; height:28px; border-radius:50% 50% 50% 0; background:var(--ink); transform:rotate(-45deg); box-shadow:0 3px 8px rgba(26,39,64,.3); display:flex; align-items:center; justify-content:center; border:2px solid #fff;}
+.map-pin span{transform:rotate(45deg); color:#fff; font-size:10px; font-weight:700; font-family:var(--font-mono);}
+.map-pin.lg{width:36px; height:36px; background:var(--teal);}
+.map-badge{position:absolute; bottom:16px; left:16px; background:#fff; padding:9px 14px; border-radius:var(--r-sm); box-shadow:var(--shadow-float); font-size:12.5px; font-weight:600; display:flex; align-items:center; gap:7px; border:1px solid var(--line);}
+
+/* ============ PRODUCTS LISTING PAGE ============ */
+.prod-layout{max-width:1320px; margin:0 auto; padding:24px 32px 70px; display:grid; grid-template-columns:236px 1fr; gap:32px; align-items:start;}
+.cat-tree-item{display:flex; align-items:center; justify-content:space-between; padding:8px 0; font-size:13.3px; color:var(--ink); cursor:pointer; border-bottom:1px solid transparent;}
+.cat-tree-item.active{color:var(--teal); font-weight:700; border-bottom-color:var(--teal);}
+.cat-tree-item .cnt{color:var(--ink-faint); font-size:11.5px; font-family:var(--font-mono);}
+.range-row{display:flex; align-items:center; gap:8px;}
+.range-row input{width:100%; border:1px solid var(--line-strong); border-radius:var(--r-sm); padding:7px 9px; font-size:12px; font-family:var(--font-mono); color:var(--ink); min-width:0;}
+.compare-bar{display:none; align-items:center; justify-content:space-between; background:var(--ink); color:#fff; padding:12px 18px; border-radius:var(--r-md); margin-bottom:16px; gap:10px; flex-wrap:wrap;}
+.compare-bar.show{display:flex;}
+.compare-bar .left{display:flex; align-items:center; gap:10px; font-size:13.3px;}
+.product-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line);}
+.pcard{background:#fff; overflow:hidden; transition:.14s; position:relative;}
+.pcard:hover{background:var(--paper);}
+.compare-check{position:absolute; top:10px; left:10px; z-index:3; width:18px; height:18px; accent-color:var(--teal);}
+.pcard .ph{height:140px;}
+.price-line{display:flex; align-items:baseline; gap:8px; margin:5px 0 9px; flex-wrap:wrap;}
+.price-line .amt{font-family:var(--font-mono); font-weight:700; font-size:18px; color:var(--ink);}
+.price-line .unit{font-size:11.5px; color:var(--ink-faint);}
+.trend-chip{display:inline-flex; align-items:center; gap:3px; font-size:11px; font-weight:700; font-family:var(--font-mono); padding:2px 6px; border-radius:var(--r-sm);}
+.trend-chip.down{color:var(--teal); background:var(--teal-tint);}
+.trend-chip.up{color:var(--clay); background:var(--clay-tint);}
+.avail-line{font-size:11.5px; color:var(--ink-soft); display:flex; align-items:center; gap:5px; margin-top:9px;}
+.avail-line .icon{width:12px; height:12px;}
+.pagination{display:flex; align-items:center; justify-content:center; gap:5px; margin-top:38px; flex-wrap:wrap;}
+.page-btn{width:34px; height:34px; border-radius:var(--r-sm); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:var(--ink); border:1px solid var(--line-strong); background:#fff; font-family:var(--font-mono);}
+.page-btn.active{background:var(--ink); color:#fff; border-color:var(--ink);}
+
+/* ============ ENTITY DETAIL PAGES (shared: Product / University / Course / Teacher / Shop) ============ */
+.pd-header{max-width:1320px; margin:0 auto; padding:20px 32px 0;}
+.pd-title-row{display:flex; align-items:flex-start; justify-content:space-between; gap:20px; flex-wrap:wrap;}
+.pd-title-row h1{font-size:30px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+.pd-bn{font-size:17px; color:var(--ink-faint); font-weight:400; font-family:var(--font-body);}
+.pd-meta-line{display:flex; align-items:center; gap:13px; margin-top:10px; flex-wrap:wrap;}
+.pd-actions{display:flex; gap:9px; flex-shrink:0; flex-wrap:wrap;}
+.pd-layout{max-width:1320px; margin:0 auto; padding:24px 32px 80px; display:grid; grid-template-columns:1fr 330px; gap:38px; align-items:start;}
+.pd-main > section{margin-bottom:42px;}
+.pd-main h2.h-sm{font-size:18px; margin-bottom:15px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--line); padding-bottom:11px;}
+.gallery-main{height:320px; border-radius:var(--r-md); display:flex; align-items:center; justify-content:center; color:var(--ink); margin-bottom:10px; overflow:hidden; background-image:radial-gradient(circle, var(--line-strong) 1px, transparent 1px); background-size:14px 14px; background-color:#EFF1EF; border:1px solid var(--line);}
+.gallery-main .icon{width:48px; height:48px; opacity:.45;}
+.gallery-thumbs{display:flex; gap:9px; flex-wrap:wrap;}
+.gthumb{width:74px; height:58px; border-radius:var(--r-sm); background-image:radial-gradient(circle, var(--line-strong) 1px, transparent 1px); background-size:10px 10px; background-color:#EFF1EF; border:2px solid var(--line); display:flex; align-items:center; justify-content:center; color:var(--ink-faint);}
+.gthumb.active{border-color:var(--teal);}
+.gthumb .icon{width:18px; height:18px; opacity:.6;}
+.pd-desc{font-size:14.3px; color:var(--ink-soft); line-height:1.7;}
+.quick-stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line);}
+.quick-stats.cols-3{grid-template-columns:repeat(3,1fr);}
+.qs-card{background:#fff; padding:15px;}
+.qs-card .lbl{font-size:11.5px; color:var(--ink-soft); margin-bottom:6px;}
+.qs-card .val{font-family:var(--font-mono); font-size:17px; font-weight:700;}
+.qs-card .val.up{color:var(--clay);}
+.chart-card{background:#fff; border:1px solid var(--line); border-radius:var(--r-md); padding:22px;}
+.chart-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:15px; gap:10px; flex-wrap:wrap;}
+.chart-now{display:flex; align-items:baseline; gap:8px;}
+.data-table{width:100%; border-collapse:collapse; min-width:420px;}
+.data-table th{text-align:left; font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); padding:9px 0; border-bottom:1px solid var(--line); font-weight:600; font-family:var(--font-mono);}
+.data-table td{padding:12px 0; border-bottom:1px solid var(--line); font-size:13.5px;}
+.data-table tr:last-child td{border-bottom:none;}
+.bar-mini{height:5px; background:var(--paper); width:100%; max-width:140px; overflow:hidden; margin-top:5px; border:1px solid var(--line);}
+.bar-mini .fill{height:100%; background:var(--teal);}
+.shop-row{display:flex; align-items:center; gap:13px; padding:13px 0; border-bottom:1px solid var(--line); flex-wrap:wrap;}
+.shop-row:last-child{border:none;}
+.shop-logo{width:36px; height:36px; border-radius:var(--r-sm); background:var(--ink); display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:11.5px; flex-shrink:0; font-family:var(--font-mono);}
+.shop-name{font-weight:600; font-size:13.8px;}
+.shop-updated{font-size:11px; color:var(--ink-faint); font-family:var(--font-mono);}
+.shop-price{font-family:var(--font-mono); font-weight:700; font-size:15px; margin-left:auto;}
+/* ===== signature relationship visualizer: branching "delta" lines ===== */
+.delta-section{background:#fff; border:1px solid var(--line); border-radius:var(--r-md); padding:22px 24px;}
+.delta-row{display:flex; align-items:center; margin-bottom:22px;}
+.delta-row:last-child{margin-bottom:0;}
+.delta-source{width:170px; flex-shrink:0; font-size:13px; font-weight:600; color:var(--ink-soft); display:flex; align-items:center; gap:8px;}
+.delta-source .dot{width:7px; height:7px; border-radius:50%; background:var(--ink); flex-shrink:0;}
+.delta-chips{display:flex; flex-direction:column; flex:1;}
+.delta-chip{display:flex; align-items:center; font-size:13.3px; font-weight:600; color:var(--ink);}
+.delta-chip .tealdot{width:6px; height:6px; border-radius:50%; background:var(--teal); margin-right:9px; flex-shrink:0;}
+.related-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:1px; background:var(--line); border:1px solid var(--line);}
+.mini-ecard{background:#fff; overflow:hidden; text-align:center;}
+.mini-ecard .ph{height:68px;}
+.mini-ecard .ph .icon{width:20px; height:20px;}
+.mini-ecard .nm{font-size:12px; font-weight:600; padding:9px 6px 11px;}
+/* reviews */
+.review-summary{display:flex; gap:34px; background:#fff; border:1px solid var(--line); border-radius:var(--r-md); padding:22px; margin-bottom:20px; align-items:center; flex-wrap:wrap;}
+.rs-big{text-align:center; flex-shrink:0; padding-right:34px; border-right:1px solid var(--line);}
+.rs-big .n{font-family:var(--font-mono); font-size:42px; font-weight:700; line-height:1;}
+.rs-big .cnt{font-size:12px; color:var(--ink-faint); margin-top:8px; font-family:var(--font-mono);}
+.rs-bars{flex:1; min-width:200px; display:flex; flex-direction:column; gap:6px;}
+.rs-bar-row{display:flex; align-items:center; gap:10px; font-size:12px;}
+.rs-bar-row .lbl{width:34px; color:var(--ink-soft); flex-shrink:0; font-family:var(--font-mono);}
+.rs-bar-track{flex:1; height:6px; background:var(--paper); overflow:hidden; border:1px solid var(--line);}
+.rs-bar-track .fill{height:100%; background:var(--gold);}
+.rs-bar-row .pct{width:32px; text-align:right; color:var(--ink-faint); flex-shrink:0; font-family:var(--font-mono);}
+.review-toolbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; gap:10px; flex-wrap:wrap;}
+.review-toolbar select{border:1px solid var(--line-strong); border-radius:var(--r-sm); padding:8px 11px; font-size:12.5px;}
+.review-card{background:#fff; border:1px solid var(--line); border-radius:var(--r-md); padding:19px; margin-bottom:13px;}
+.rev-top{display:flex; align-items:center; gap:12px; margin-bottom:10px; flex-wrap:wrap;}
+.rev-name-row{display:flex; align-items:center; gap:8px;}
+.rev-name{font-weight:700; font-size:13.5px;}
+.verified-tag{display:flex; align-items:center; gap:3px; font-size:10.5px; color:var(--teal); background:var(--teal-tint); padding:2px 7px; border-radius:100px; font-weight:600;}
+.verified-tag .icon{width:10px; height:10px;}
+.rev-date{font-size:11.5px; color:var(--ink-faint); font-family:var(--font-mono);}
+.rev-text{font-size:13.3px; color:var(--ink-soft); line-height:1.65; margin:10px 0 12px;}
+.rev-footer{display:flex; align-items:center; gap:16px; font-size:12px; color:var(--ink-soft);}
+.helpful-btn{display:flex; align-items:center; gap:6px; padding:6px 12px; border:1px solid var(--line-strong); border-radius:100px;}
+.helpful-btn .icon{width:12px; height:12px;}
+/* sidebar */
+.pd-sidebar{position:sticky; top:90px; display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line);}
+.side-card{background:#fff; padding:19px;}
+.side-card h6{font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); font-weight:700; margin-bottom:13px; font-family:var(--font-mono);}
+.dl-row{display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--line); font-size:13px; gap:10px;}
+.dl-row:last-child{border:none; padding-bottom:0;}
+.dl-row dt{color:var(--ink-soft); flex-shrink:0;}
+.dl-row dd{font-weight:600; text-align:right;}
+.contrib-note{display:flex; align-items:center; gap:11px; background:#fff; padding:14px 15px; font-size:12.3px; color:var(--ink-soft);}
+.contrib-note .icon{width:17px; height:17px; color:var(--teal); flex-shrink:0;}
+
+/* entity banner / logo / avatar headers (university, shop, teacher) */
+.entity-banner{height:180px; border-radius:var(--r-lg); background-image:radial-gradient(circle, var(--line-strong) 1px, transparent 1px); background-size:14px 14px; background-color:#EFF1EF; border:1px solid var(--line); margin-bottom:-44px; display:flex; align-items:center; justify-content:center; color:var(--ink-faint);}
+.entity-banner .icon{width:38px; height:38px; opacity:.35;}
+.entity-header-row{display:flex; align-items:flex-end; gap:18px; position:relative; z-index:2; flex-wrap:wrap;}
+.entity-logo-lg{width:84px; height:84px; border-radius:var(--r-md); background:#fff; border:3px solid #fff; box-shadow:var(--shadow-float); display:flex; align-items:center; justify-content:center; color:var(--ink); flex-shrink:0; background-image:radial-gradient(circle, var(--line-strong) 1px, transparent 1px); background-size:10px 10px;}
+.entity-logo-lg.circle{border-radius:50%;}
+.entity-logo-lg .icon{width:30px; height:30px;}
+
+/* timeline */
+.timeline{position:relative; padding-left:26px;}
+.timeline::before{content:''; position:absolute; left:4px; top:4px; bottom:4px; width:2px; background:var(--line-strong);}
+.tl-item{position:relative; padding-bottom:24px;}
+.tl-item:last-child{padding-bottom:0;}
+.tl-item::before{content:''; position:absolute; left:-26px; top:2px; width:10px; height:10px; border-radius:50%; background:var(--teal); border:2px solid #fff; box-shadow:0 0 0 1.5px var(--teal);}
+.tl-year{font-family:var(--font-mono); font-weight:700; font-size:13px; color:var(--ink); margin-bottom:3px;}
+.tl-desc{font-size:13px; color:var(--ink-soft); line-height:1.5;}
+
+/* promo cards (shop offers) */
+.promo-row{display:flex; gap:14px; flex-wrap:wrap;}
+.promo-card{border:1px dashed var(--clay); background:var(--clay-tint); border-radius:var(--r-md); padding:15px 17px; flex:1; min-width:210px;}
+.promo-card .ptitle{font-weight:700; font-size:13.5px; color:var(--clay); margin-bottom:4px; display:flex; align-items:center; gap:6px;}
+.promo-card .ptitle .icon{width:14px; height:14px;}
+.promo-card .psub{font-size:12px; color:var(--ink-soft);}
+
+/* ====================================================================
+   RESPONSIVE — tablet (≤1024px), mobile (≤768px), small phone (≤480px)
+   ==================================================================== */
+@media (max-width:1024px){
+  .utility-bar{display:none;}
+  .nav-search-main, .nav-links{display:none;}
+  .nav-right .btn-outline{display:none;}
+  .hamburger-btn{display:flex;}
+  .results-layout, .cat-layout, .prod-layout, .pd-layout{grid-template-columns:1fr;}
+  .filter-sidebar{display:none; position:static;}
+  .filter-sidebar.mobile-open{display:block; margin-bottom:20px;}
+  .filter-toggle-btn{display:inline-flex;}
+  .map-panel{position:static; height:340px;}
+  .pd-sidebar{position:static;}
+  .product-grid{grid-template-columns:repeat(2,1fr);}
+  .cat-grid{grid-template-columns:repeat(3,1fr);}
+  .related-grid{grid-template-columns:repeat(3,1fr);}
+  .rrow-photo{display:none;}
+  .footer-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:768px){
+  .navbar-inner{padding:13px 18px; gap:14px;}
+  .utility-inner, .proto-inner{padding-left:18px; padding-right:18px;}
+  .proto-inner{flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:2px;}
+  .hero{padding:46px 20px 40px;}
+  .hero h1{font-size:31px;}
+  .hero p.sub{font-size:14.3px;}
+  .search-mega{flex-direction:column; padding:8px; max-width:none;}
+  .search-mega select{border-right:none; border-bottom:1px solid var(--line); padding:10px 6px; width:100%;}
+  .search-mega .field{padding:10px 6px;}
+  .search-mega button{width:100%; padding:12px; margin-top:2px;}
+  .section{padding:36px 18px;}
+  .pulse-grid{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .stat-block{padding:22px 18px;}
+  .cta-band{flex-direction:column; align-items:flex-start; padding:30px 22px;}
+  .cta-actions{width:100%;}
+  .cta-actions .btn{flex:1; justify-content:center;}
+  .footer{padding:40px 0 20px;}
+  .footer-grid{grid-template-columns:1fr 1fr; padding:0 18px 26px;}
+  .footer-bottom{padding:0 18px;}
+  .breadcrumb, .search-hero, .filter-tabs, .results-layout, .cat-header, .cat-layout, .prod-layout, .pd-header, .pd-layout{padding-left:18px; padding-right:18px;}
+  .filter-tabs{overflow-x:auto; flex-wrap:nowrap; -webkit-overflow-scrolling:touch;}
+  .quick-stats{grid-template-columns:repeat(2,1fr);}
+  .related-grid{grid-template-columns:repeat(2,1fr);}
+  .gallery-main{height:220px;}
+  .rrow{flex-direction:column;}
+  .rrow-thumb{width:100%; height:110px;}
+  .trow{flex-direction:row;}
+  .review-summary{flex-direction:column; align-items:flex-start; gap:16px;}
+  .rs-big{border-right:none; padding-right:0; padding-bottom:16px; border-bottom:1px solid var(--line); width:100%;}
+  .pd-title-row h1{font-size:23px;}
+  .entity-header-row{flex-direction:column; align-items:flex-start; gap:14px;}
+  .entity-banner{margin-bottom:0;}
+  .delta-row{flex-direction:column; align-items:flex-start; gap:8px;}
+  .delta-row svg{display:none;}
+  .delta-source{width:auto;}
+  .delta-chips{padding-left:15px; border-left:2px solid var(--line-strong); gap:7px; width:100%;}
+  .delta-chip{height:auto !important; padding:3px 0;}
+  .cat-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media (max-width:480px){
+  .product-grid{grid-template-columns:1fr;}
+  .related-grid{grid-template-columns:repeat(2,1fr);}
+  .footer-grid{grid-template-columns:1fr;}
+  .quick-stats{grid-template-columns:repeat(2,1fr);}
+  .hero h1{font-size:26px;}
+  .stat-block .num{font-size:23px;}
+  .tstat-row{gap:13px;}
+  .rs-big{padding-bottom:14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= ICON SPRITE ================= -->
+<svg style="display:none" aria-hidden="true">
+<defs>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.1 6.6.7-4.9 4.5 1.4 6.6L12 16.9 6 20.4l1.4-6.6-4.9-4.5 6.6-.7L12 2.5z"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 22s7-7.58 7-12a7 7 0 1 0-14 0c0 4.42 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 21v-1.2A5.8 5.8 0 0 1 8.3 14h1.4a5.8 5.8 0 0 1 5.8 5.8V21"/><circle cx="17.5" cy="8.5" r="2.4"/><path d="M15.5 21v-1c0-1.6-.5-3-1.4-4.1"/></symbol>
+<symbol id="i-building" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M9 21v-4h6v4"/><line x1="8" y1="7.5" x2="9.5" y2="7.5"/><line x1="14.5" y1="7.5" x2="16" y2="7.5"/><line x1="8" y1="11.5" x2="9.5" y2="11.5"/><line x1="14.5" y1="11.5" x2="16" y2="11.5"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v17H6.5A2.5 2.5 0 0 0 4 21.5V4.5z"/><line x1="4" y1="21.5" x2="4" y2="4.5"/></symbol>
+<symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="2" y1="13" x2="22" y2="13"/></symbol>
+<symbol id="i-utensils" viewBox="0 0 24 24"><line x1="7" y1="2" x2="7" y2="22"/><path d="M5 2v6.5a2 2 0 0 0 4 0V2"/><path d="M17 2c-1.2 1.8-2 4-2 7s.8 5 2 5v8"/></symbol>
+<symbol id="i-hospital" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="15" rx="1.5"/><line x1="12" y1="10" x2="12" y2="16"/><line x1="9" y1="13" x2="15" y2="13"/><path d="M9 6V4.5A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.5V6"/></symbol>
+<symbol id="i-store" viewBox="0 0 24 24"><path d="M3 9l1.2-5.5h15.6L21 9"/><path d="M3 9v11h18V9"/><path d="M9 20v-6h6v6"/></symbol>
+<symbol id="i-grad" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5-10-5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/><line x1="22" y1="9" x2="22" y2="15"/></symbol>
+<symbol id="i-chevron-down" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></symbol>
+<symbol id="i-chevron-right" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></symbol>
+<symbol id="i-chevron-left" viewBox="0 0 24 24"><polyline points="15 6 9 12 15 18"/></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5"/><path d="M8 12.3l2.7 2.7 5.3-6"/></symbol>
+<symbol id="i-trend-up" viewBox="0 0 24 24"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="14 7 21 7 21 14"/></symbol>
+<symbol id="i-trend-down" viewBox="0 0 24 24"><polyline points="3 7 9 13 13 9 21 17"/><polyline points="21 10 21 17 14 17"/></symbol>
+<symbol id="i-arrow-right" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></symbol>
+<symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M5 7l-3 7a3 3 0 0 0 6 0l-3-7z"/><path d="M19 7l-3 7a3 3 0 0 0 6 0l-3-7z"/><line x1="5" y1="7" x2="19" y2="7"/><line x1="9" y1="21" x2="15" y2="21"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.3"/><polyline points="12 7 12 12 16 14.5"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><path d="M21.5 16.4v3a2 2 0 0 1-2.2 2 19.4 19.4 0 0 1-8.5-3 19.1 19.1 0 0 1-5.9-5.9 19.4 19.4 0 0 1-3-8.5A2 2 0 0 1 3.9 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L7.7 9.7a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.8 2.8z"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.3"/><line x1="2.7" y1="12" x2="21.3" y2="12"/><path d="M12 2.7c3 3 4.5 6 4.5 9.3s-1.5 6.3-4.5 9.3c-3-3-4.5-6-4.5-9.3S9 5.7 12 2.7z"/></symbol>
+<symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4V3z"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="18" cy="18" r="2.6"/><line x1="8.2" y1="10.8" x2="15.8" y2="7.2"/><line x1="8.2" y1="13.2" x2="15.8" y2="16.8"/></symbol>
+<symbol id="i-filter" viewBox="0 0 24 24"><polygon points="4 4 20 4 14 12.5 14 19 10 21 10 12.5 4 4"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></symbol>
+<symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.6"/><path d="M21 15l-5-5L5 21"/></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+<symbol id="i-bar" viewBox="0 0 24 24"><line x1="6" y1="20" x2="6" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="18" y1="20" x2="18" y2="14"/></symbol>
+<symbol id="i-link" viewBox="0 0 24 24"><path d="M9 17H7a5 5 0 0 1 0-10h2"/><path d="M15 7h2a5 5 0 0 1 0 10h-2"/><line x1="8" y1="12" x2="16" y2="12"/></symbol>
+<symbol id="i-thumb" viewBox="0 0 24 24"><path d="M7 22V11l5-9 1 1.2v6.3h6.3l-1.8 11-2.7 1.5H9a2 2 0 0 1-2-2z"/></symbol>
+<symbol id="i-camera" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h3l2-3h8l2 3h3a2 2 0 0 1 2 2v11z"/><circle cx="12" cy="13" r="4"/></symbol>
+<symbol id="i-shirt" viewBox="0 0 24 24"><path d="M16 3l-4 2-4-2-5 3.2 2.2 4 2.8-1V21h8V9.2l2.8 1 2.2-4z"/></symbol>
+<symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></symbol>
+<symbol id="i-pill" viewBox="0 0 24 24"><rect x="3" y="9" width="18" height="6" rx="3" transform="rotate(45 12 12)"/><line x1="9.5" y1="9.5" x2="14.5" y2="14.5"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></symbol>
+<symbol id="i-award" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M9 13.5L7 22l5-3 5 3-2-8.5"/></symbol>
+<symbol id="i-percent" viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></symbol>
+<symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 6.5l10 7 10-7"/></symbol>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 10-12h-7l0-8z"/></symbol>
+</defs>
+</svg>
+
+<!-- ================= UTILITY BAR ================= -->
+<div class="utility-bar">
+  <div class="utility-inner">
+    <div class="links"><a>For Businesses</a><a>Become a Contributor</a><a>Help Centre</a></div>
+    <div class="links"><a>বাং / EN</a><a>Sign In</a></div>
+  </div>
+</div>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <div class="logo">
+      <svg width="26" height="26" viewBox="0 0 26 26"><path d="M13 24V13" stroke="#1A2740" stroke-width="2" stroke-linecap="round"/><path d="M13 13C13 13 7 11 5 4" stroke="#1A2740" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M13 13C13 13 13 9 13 2" stroke="#0F6E72" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M13 13C13 13 19 11 21 4" stroke="#BD5A30" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="5" cy="4" r="2" fill="#1A2740"/><circle cx="13" cy="2" r="2" fill="#0F6E72"/><circle cx="21" cy="4" r="2" fill="#BD5A30"/></svg>
+      Desh<span class="accent">Info</span>
+    </div>
+    <div class="nav-search nav-search-main">
+      <svg class="icon"><use href="#i-search"/></svg>
+      <input type="text" placeholder="Search the index — products, universities, restaurants, doctors...">
+      <select><option>All</option><option>Products</option><option>Universities</option><option>Restaurants</option><option>People</option></select>
+    </div>
+    <div class="nav-links">
+      <a class="nav-link">Categories <svg class="icon"><use href="#i-chevron-down"/></svg></a>
+      <a class="nav-link"><svg class="icon"><use href="#i-scale"/></svg> Compare</a>
+      <a class="nav-link"><svg class="icon"><use href="#i-pin"/></svg> Maps</a>
+      <a class="nav-link"><svg class="icon"><use href="#i-trend-up"/></svg> Trending</a>
+    </div>
+    <div class="nav-right">
+      <button class="btn btn-outline btn-sm"><svg class="icon" style="width:14px;height:14px"><use href="#i-plus"/></svg> Add Information</button>
+      <div class="icon-btn"><svg class="icon" style="width:16px;height:16px"><use href="#i-bell"/></svg><span class="badge-dot"></span></div>
+      <div class="avatar">RA</div>
+      <button class="icon-btn hamburger-btn" id="hamburgerBtn"><svg class="icon" style="width:18px;height:18px"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="nav-search">
+      <svg class="icon"><use href="#i-search"/></svg>
+      <input type="text" placeholder="Search the index...">
+    </div>
+    <div class="mobile-menu-links">
+      <a class="nav-link"><svg class="icon"><use href="#i-grid"/></svg> Categories</a>
+      <a class="nav-link"><svg class="icon"><use href="#i-scale"/></svg> Compare</a>
+      <a class="nav-link"><svg class="icon"><use href="#i-pin"/></svg> Maps</a>
+      <a class="nav-link"><svg class="icon"><use href="#i-trend-up"/></svg> Trending</a>
+      <a class="nav-link"><svg class="icon"><use href="#i-globe"/></svg> বাং / EN</a>
+    </div>
+    <button class="btn btn-primary"><svg class="icon" style="width:14px;height:14px;stroke:#fff"><use href="#i-plus"/></svg> Add Information</button>
+  </div>
+</nav>
+
+<!-- ================= PROTOTYPE SWITCHER ================= -->
+<div class="proto-bar">
+  <div class="proto-inner">
+    <span class="proto-label">Prototype</span>
+    <button class="proto-pill active" data-page="home">Homepage</button>
+    <button class="proto-pill" data-page="search">Search Results</button>
+    <button class="proto-pill" data-page="category">Restaurants</button>
+    <button class="proto-pill" data-page="products">Browse Products</button>
+    <button class="proto-pill" data-page="product">Product — Potato</button>
+    <button class="proto-pill" data-page="university">University — BRAC</button>
+    <button class="proto-pill" data-page="course">Course — CSE</button>
+    <button class="proto-pill" data-page="teacher">Teacher Profile</button>
+    <button class="proto-pill" data-page="shop">Shop — Shwapno</button>
+  </div>
+</div>
+
+<!-- ======================================================= -->
+<!-- ===========================  PAGE 1 — HOME  ============================ -->
+<!-- ======================================================= -->
+<main id="page-home">
+
+  <section class="hero">
+    <svg class="hero-watermark" viewBox="0 0 500 600" preserveAspectRatio="xMidYMid slice">
+      <g stroke="#1A2740" stroke-width="1.4" fill="none" opacity="0.5">
+        <path d="M460 0 C 420 140, 380 180, 300 230"/>
+        <path d="M300 230 C 230 270, 200 310, 170 420"/>
+        <path d="M300 230 C 340 290, 360 330, 340 460"/>
+        <path d="M170 420 C 130 460, 90 480, 20 520"/>
+        <path d="M170 420 C 190 470, 200 510, 180 600"/>
+        <path d="M340 460 C 360 500, 400 520, 460 560"/>
+      </g>
+      <circle cx="460" cy="0" r="3" fill="#1A2740"/>
+      <circle cx="300" cy="230" r="3.5" fill="#1A2740"/>
+      <circle cx="170" cy="420" r="3" fill="#0F6E72"/>
+      <circle cx="340" cy="460" r="3" fill="#BD5A30"/>
+      <circle cx="20" cy="520" r="2.5" fill="#0F6E72"/>
+      <circle cx="180" cy="600" r="2.5" fill="#BD5A30"/>
+      <circle cx="460" cy="560" r="2.5" fill="#0F6E72"/>
+    </svg>
+    <div class="hero-inner">
+      <div class="eyebrow"><span class="dot"></span><span class="eyebrow-text">The structured index of Bangladesh</span></div>
+      <h1>Search Anything in <span class="accent">Bangladesh</span></h1>
+      <p class="sub">Products, universities, courses, teachers, shops, restaurants, doctors, companies and more — every entry documented, rated, and traced back to what it connects to.</p>
+      <div class="search-mega">
+        <select><option>All</option><option>Products</option><option>Universities</option><option>Restaurants</option></select>
+        <div class="field">
+          <svg class="icon"><use href="#i-search"/></svg>
+          <input type="text" placeholder="Try “CSE”, “Walton Refrigerator”, “BRAC University”...">
+        </div>
+        <button>Search <svg class="icon" style="width:14px;height:14px;stroke:#fff"><use href="#i-arrow-right"/></svg></button>
+      </div>
+      <div class="trending-row">
+        <span class="label">Frequently searched:</span>
+        <a class="chip-link">CSE</a><a class="chip-link">Walton Refrigerator</a><a class="chip-link">BRAC University</a><a class="chip-link">Dhaka Metro Rail</a><a class="chip-link">Best Hospitals in Dhaka</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-bottom:0">
+    <div class="section-head"><div><h2>Explore by category</h2><p>Every category is a living, cross-referenced index — not a catalog.</p></div></div>
+    <div class="cat-grid" id="catGrid"></div>
+  </section>
+
+  <section class="stats-strip" style="margin-top:54px">
+    <div class="stats-grid">
+      <div class="stat-block"><div class="num">2,084,341</div><div class="lbl">Community Reviews</div></div>
+      <div class="stat-block"><div class="num">512,900</div><div class="lbl">Products Tracked</div></div>
+      <div class="stat-block"><div class="num">11,742</div><div class="lbl">Universities &amp; Schools</div></div>
+      <div class="stat-block"><div class="num">98,600</div><div class="lbl">Businesses Verified</div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><h2>Right now in Bangladesh</h2><p>What the community is searching, updating and reviewing today.</p></div></div>
+    <div class="pulse-grid" id="pulseGrid"></div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="section-head">
+      <div><h2>Featured this week</h2><p>A mix of entities, hand-picked for completeness and trust.</p></div>
+      <a class="view-all" href="#">View all <svg class="icon" style="width:13px;height:13px"><use href="#i-arrow-right"/></svg></a>
+    </div>
+    <div class="scroll-row" id="featuredRow"></div>
+  </section>
+
+  <section class="section" style="padding-top:6px">
+    <div class="cta-band">
+      <svg class="delta-deco" viewBox="0 0 220 300" preserveAspectRatio="xMidYMid slice">
+        <g stroke="#3A4A6B" stroke-width="1.2" fill="none">
+          <path d="M210 0 C 170 60, 150 90, 100 130"/>
+          <path d="M100 130 C 60 160, 40 190, 20 260"/>
+          <path d="M100 130 C 130 170, 150 200, 140 300"/>
+        </g>
+      </svg>
+      <div>
+        <h2>Know something we don't?</h2>
+        <p>DeshInfo runs on community knowledge. Add a missing entity, correct a fact, or share a review — every contribution is credited and verified.</p>
+      </div>
+      <div class="cta-actions">
+        <button class="btn btn-primary"><svg class="icon" style="width:14px;height:14px"><use href="#i-plus"/></svg> Add an Entity</button>
+        <button class="btn btn-outline">Write a Review</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ======================================================= -->
+<!-- ===========================  PAGE 2 — SEARCH  =========================== -->
+<!-- ======================================================= -->
+<main id="page-search" class="hidden">
+  <div class="search-hero">
+    <div class="search-mega" style="max-width:1320px">
+      <select><option>All</option></select>
+      <div class="field"><svg class="icon"><use href="#i-search"/></svg><input type="text" value="CSE"></div>
+      <button>Search</button>
+    </div>
+  </div>
+  <div class="filter-tabs" id="filterTabs"></div>
+
+  <div class="results-layout">
+    <aside class="filter-sidebar" id="searchFilterSidebar">
+      <div class="filter-group">
+        <h6>Entity Type</h6>
+        <label class="check-row"><input type="checkbox" checked> Courses <span class="cnt">120</span></label>
+        <label class="check-row"><input type="checkbox" checked> Universities <span class="cnt">85</span></label>
+        <label class="check-row"><input type="checkbox" checked> Teachers <span class="cnt">210</span></label>
+        <label class="check-row"><input type="checkbox" checked> Books <span class="cnt">14</span></label>
+        <label class="check-row"><input type="checkbox" checked> Companies <span class="cnt">18</span></label>
+        <label class="check-row"><input type="checkbox"> Articles <span class="cnt">6</span></label>
+      </div>
+      <div class="filter-group">
+        <h6>Location</h6>
+        <label class="check-row"><input type="checkbox"> Dhaka <span class="cnt">241</span></label>
+        <label class="check-row"><input type="checkbox"> Chattogram <span class="cnt">58</span></label>
+        <label class="check-row"><input type="checkbox"> Sylhet <span class="cnt">24</span></label>
+        <label class="check-row"><input type="checkbox"> Rajshahi <span class="cnt">17</span></label>
+      </div>
+      <div class="filter-group">
+        <h6>Rating</h6>
+        <label class="check-row"><input type="radio" name="rt"> 4.5 &amp; up</label>
+        <label class="check-row"><input type="radio" name="rt"> 4.0 &amp; up</label>
+        <label class="check-row"><input type="radio" name="rt" checked> Any rating</label>
+      </div>
+    </aside>
+
+    <div>
+      <button class="btn btn-outline btn-sm filter-toggle-btn" onclick="document.getElementById('searchFilterSidebar').classList.toggle('mobile-open')"><svg class="icon" style="width:14px;height:14px"><use href="#i-filter"/></svg> Filters</button>
+      <div id="searchSections"></div>
+    </div>
+  </div>
+</main>
+
+<!-- ======================================================= -->
+<!-- ===========================  PAGE 3 — CATEGORY ========================== -->
+<!-- ======================================================= -->
+<main id="page-category" class="hidden">
+  <div class="breadcrumb">
+    <a>Home</a><svg class="icon"><use href="#i-chevron-right"/></svg><a>Categories</a><svg class="icon"><use href="#i-chevron-right"/></svg><a style="color:var(--ink);font-weight:600">Restaurants</a>
+  </div>
+  <div class="cat-header">
+    <h1>Restaurants in Bangladesh</h1>
+    <p>12,480 restaurants documented and reviewed by the community across 64 districts.</p>
+    <div class="chip-filter-row" id="catChips"></div>
+  </div>
+
+  <div class="cat-layout">
+    <aside class="filter-sidebar" id="catFilterSidebar">
+      <div class="filter-group">
+        <h6>Cuisine</h6>
+        <label class="check-row"><input type="checkbox" checked> Bengali <span class="cnt">412</span></label>
+        <label class="check-row"><input type="checkbox"> Chinese <span class="cnt">188</span></label>
+        <label class="check-row"><input type="checkbox"> Thai <span class="cnt">76</span></label>
+        <label class="check-row"><input type="checkbox"> Fast Food <span class="cnt">340</span></label>
+        <label class="check-row"><input type="checkbox"> Cafe &amp; Bakery <span class="cnt">221</span></label>
+      </div>
+      <div class="filter-group">
+        <h6>Price Range</h6>
+        <label class="check-row"><input type="checkbox"> ৳ Budget</label>
+        <label class="check-row"><input type="checkbox" checked> ৳৳ Mid-range</label>
+        <label class="check-row"><input type="checkbox"> ৳৳৳ Premium</label>
+      </div>
+      <div class="filter-group">
+        <h6>Other</h6>
+        <label class="check-row"><input type="checkbox"> Open now</label>
+        <label class="check-row"><input type="checkbox"> Home delivery</label>
+        <label class="check-row"><input type="checkbox"> Outdoor seating</label>
+      </div>
+    </aside>
+
+    <div>
+      <button class="btn btn-outline btn-sm filter-toggle-btn" onclick="document.getElementById('catFilterSidebar').classList.toggle('mobile-open')"><svg class="icon" style="width:14px;height:14px"><use href="#i-filter"/></svg> Filters</button>
+      <div class="result-bar">
+        <span class="count">1,248 restaurants in Dhanmondi &amp; Gulshan</span>
+        <select><option>Highest Rated</option><option>Most Reviewed</option><option>Nearest</option></select>
+      </div>
+      <div class="rest-list" id="restList"></div>
+      <div class="pagination" id="catPagination"></div>
+    </div>
+
+    <div class="map-panel">
+      <div class="map-pin lg" style="top:38%;left:42%"><span>4.6</span></div>
+      <div class="map-pin" style="top:20%;left:60%"><span>4.4</span></div>
+      <div class="map-pin" style="top:60%;left:25%"><span>4.7</span></div>
+      <div class="map-pin" style="top:70%;left:65%"><span>4.2</span></div>
+      <div class="map-pin" style="top:48%;left:78%"><span>4.5</span></div>
+      <div class="map-pin" style="top:15%;left:30%"><span>4.3</span></div>
+      <div class="map-badge"><svg class="icon" style="width:13px;height:13px;color:var(--teal)"><use href="#i-pin"/></svg> 1,248 results in this view</div>
+    </div>
+  </div>
+</main>
+
+<!-- ======================================================= -->
+<!-- ===========================  PAGE 4 — PRODUCTS  ========================== -->
+<!-- ======================================================= -->
+<main id="page-products" class="hidden">
+  <div class="breadcrumb">
+    <a>Home</a><svg class="icon"><use href="#i-chevron-right"/></svg><a>Categories</a><svg class="icon"><use href="#i-chevron-right"/></svg><a style="color:var(--ink);font-weight:600">Products</a>
+  </div>
+  <div class="cat-header">
+    <h1>Browse Products</h1>
+    <p>512,900 products tracked for price, availability and quality across 8,400 shops nationwide.</p>
+  </div>
+
+  <div class="prod-layout">
+    <aside class="filter-sidebar" id="prodFilterSidebar">
+      <div class="filter-group">
+        <h6>Category</h6>
+        <div class="cat-tree-item active">All Products <span class="cnt">512,900</span></div>
+        <div class="cat-tree-item">Groceries &amp; Food <span class="cnt">186,200</span></div>
+        <div class="cat-tree-item">Electronics <span class="cnt">94,800</span></div>
+        <div class="cat-tree-item">Mobile &amp; Gadgets <span class="cnt">41,300</span></div>
+        <div class="cat-tree-item">Home Appliances <span class="cnt">38,700</span></div>
+        <div class="cat-tree-item">Fashion <span class="cnt">112,400</span></div>
+        <div class="cat-tree-item">Health &amp; Beauty <span class="cnt">39,500</span></div>
+      </div>
+      <div class="filter-group">
+        <h6>Price Range (৳)</h6>
+        <div class="range-row"><input type="text" placeholder="Min"><span>—</span><input type="text" placeholder="Max"></div>
+      </div>
+      <div class="filter-group">
+        <h6>Brand</h6>
+        <label class="check-row"><input type="checkbox"> Walton <span class="cnt">2,140</span></label>
+        <label class="check-row"><input type="checkbox"> Pran <span class="cnt">880</span></label>
+        <label class="check-row"><input type="checkbox"> Aarong <span class="cnt">410</span></label>
+        <label class="check-row"><input type="checkbox"> Samsung <span class="cnt">1,205</span></label>
+        <label class="check-row"><input type="checkbox"> Square <span class="cnt">560</span></label>
+      </div>
+      <div class="filter-group">
+        <h6>Rating</h6>
+        <label class="check-row"><input type="radio" name="pr"> 4★ &amp; up</label>
+        <label class="check-row"><input type="radio" name="pr" checked> Any rating</label>
+      </div>
+    </aside>
+
+    <div>
+      <button class="btn btn-outline btn-sm filter-toggle-btn" onclick="document.getElementById('prodFilterSidebar').classList.toggle('mobile-open')"><svg class="icon" style="width:14px;height:14px"><use href="#i-filter"/></svg> Filters</button>
+      <div class="compare-bar show">
+        <div class="left">
+          <svg class="icon" style="color:#fff"><use href="#i-scale"/></svg>
+          <span><strong>2 products</strong> selected for comparison</span>
+        </div>
+        <button class="btn btn-primary btn-sm">Compare now <svg class="icon" style="width:12px;height:12px;stroke:#fff"><use href="#i-arrow-right"/></svg></button>
+      </div>
+      <div class="result-bar">
+        <span class="count">512,900 products</span>
+        <select><option>Most Reviewed</option><option>Highest Rated</option><option>Price: Low to High</option><option>Recently Updated</option></select>
+      </div>
+      <div class="product-grid" id="productGrid"></div>
+      <div class="pagination" id="prodPagination"></div>
+    </div>
+  </div>
+</main>
+
+<!-- ======================================================= -->
+<!-- ===========================  PAGE 5 — PRODUCT DETAIL ===================== -->
+<!-- ======================================================= -->
+<main id="page-product" class="hidden">
+  <div class="breadcrumb">
+    <a>Home</a><svg class="icon"><use href="#i-chevron-right"/></svg><a>Products</a><svg class="icon"><use href="#i-chevron-right"/></svg><a>Groceries &amp; Food</a><svg class="icon"><use href="#i-chevron-right"/></svg><a style="color:var(--ink);font-weight:600">Potato</a>
+  </div>
+
+  <div class="pd-header">
+    <div class="pd-title-row">
+      <div>
+        <h1>Potato <span class="pd-bn">আলু</span></h1>
+        <div class="pd-meta-line">
+          <span class="tag teal"><svg class="icon" style="width:11px;height:11px"><use href="#i-check"/></svg> Verified Entity</span>
+          <span class="tag">Vegetable</span><span class="tag">Tuber Crop</span>
+          <span class="rating-line" style="margin:0">
+            <span class="stars" id="pdStars"></span>
+            <span class="rating-num">4.3</span><span class="rating-count">(18,204 reviews)</span>
+          </span>
+        </div>
+      </div>
+      <div class="pd-actions">
+        <button class="btn btn-outline btn-sm"><svg class="icon" style="width:13px;height:13px"><use href="#i-star"/></svg> Write a Review</button>
+        <button class="btn btn-outline btn-sm"><svg class="icon" style="width:13px;height:13px"><use href="#i-scale"/></svg> Add to Compare</button>
+        <button class="icon-btn"><svg class="icon" style="width:15px;height:15px"><use href="#i-bookmark"/></svg></button>
+        <button class="icon-btn"><svg class="icon" style="width:15px;height:15px"><use href="#i-share"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="pd-layout">
+    <div class="pd-main">
+
+      <section>
+        <div class="gallery-main" id="galleryMain"><svg class="icon"><use href="#i-image"/></svg></div>
+        <div class="gallery-thumbs" id="galleryThumbs"></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Overview</h2>
+        <p class="pd-desc">The potato is one of Bangladesh's most widely cultivated and consumed vegetables, grown chiefly in Munshiganj, Bogura and Rangpur. A staple of everyday Bengali cooking, it appears in everything from bhorta and curries to snacks like singara and chop. Prices fluctuate seasonally with the November–March harvest and are tracked here across regions and shops.</p>
+        <div class="quick-stats" style="margin-top:18px">
+          <div class="qs-card"><div class="lbl">Average Price</div><div class="val">৳35<span style="font-size:11.5px;color:var(--ink-faint)">/kg</span></div></div>
+          <div class="qs-card"><div class="lbl">Price Trend (30d)</div><div class="val" style="display:flex;align-items:center;gap:5px;color:var(--teal)"><svg class="icon" style="width:14px;height:14px"><use href="#i-trend-down"/></svg> -4.2%</div></div>
+          <div class="qs-card"><div class="lbl">Seasonality</div><div class="val" style="font-size:14px">Year-round</div></div>
+          <div class="qs-card"><div class="lbl">Top Origin</div><div class="val" style="font-size:14px">Munshiganj</div></div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="h-sm"><svg class="icon" style="color:var(--teal)"><use href="#i-bar"/></svg> Price Trend — Last 6 Months</h2>
+        <div class="chart-card">
+          <div class="chart-head">
+            <div class="chart-now"><span class="amt" style="font-family:var(--font-mono);font-size:21px;font-weight:700">৳35/kg</span><span class="trend-chip down"><svg class="icon" style="width:11px;height:11px"><use href="#i-trend-down"/></svg> 4.2%</span></div>
+            <span style="font-size:12px;color:var(--ink-faint);font-family:var(--font-mono)">Updated 3 hours ago</span>
+          </div>
+          <svg id="priceChart" viewBox="0 0 600 160" style="width:100%;height:160px"></svg>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Price by Region</h2>
+        <div class="table-scroll"><table class="data-table">
+          <thead><tr><th>Region</th><th>Avg. Price</th><th style="width:160px">Relative</th></tr></thead>
+          <tbody id="regionTable"></tbody>
+        </table></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Price by Shop</h2>
+        <div class="chart-card" id="shopList" style="padding:6px 22px"></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Specifications &amp; Nutrition <span style="font-size:11.5px;font-weight:500;color:var(--ink-faint)">(per 100g)</span></h2>
+        <div class="table-scroll"><table class="data-table">
+          <tbody>
+            <tr><td>Calories</td><td class="mono">77 kcal</td></tr>
+            <tr><td>Carbohydrates</td><td class="mono">17.5 g</td></tr>
+            <tr><td>Protein</td><td class="mono">2 g</td></tr>
+            <tr><td>Dietary Fiber</td><td class="mono">2.2 g</td></tr>
+            <tr><td>Vitamin C</td><td class="mono">19.7 mg</td></tr>
+            <tr><td>Potassium</td><td class="mono">425 mg</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">How Potato connects</h2>
+        <div class="delta-section" id="deltaSection"></div>
+      </section>
+
+      <section>
+        <div class="section-head" style="margin-bottom:16px; border:none; padding-bottom:0">
+          <h2 class="h-sm" style="margin:0; border:none; padding:0">Related products</h2>
+        </div>
+        <div class="related-grid" id="relatedGrid"></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Reviews</h2>
+        <div class="review-summary">
+          <div class="rs-big"><div class="n">4.3</div><div class="stars" id="rsStars"></div><div class="cnt">18,204 reviews</div></div>
+          <div class="rs-bars" id="rsBars"></div>
+        </div>
+        <div class="review-toolbar">
+          <span style="font-size:13px;color:var(--ink-soft)">Showing 4 of 18,204 reviews</span>
+          <select><option>Most Helpful</option><option>Newest</option><option>Highest Rated</option><option>Lowest Rated</option></select>
+        </div>
+        <div id="reviewList"></div>
+        <button class="btn btn-outline" style="width:100%;justify-content:center">Load more reviews</button>
+      </section>
+
+    </div>
+
+    <aside class="pd-sidebar">
+      <div class="side-card">
+        <h6>Quick Facts</h6>
+        <dl>
+          <div class="dl-row"><dt>Category</dt><dd>Vegetable, Tuber</dd></div>
+          <div class="dl-row"><dt>Local Name</dt><dd>আলু (Alu)</dd></div>
+          <div class="dl-row"><dt>Peak Season</dt><dd>Nov – Mar</dd></div>
+          <div class="dl-row"><dt>Shelf Life</dt><dd>~30 days</dd></div>
+          <div class="dl-row"><dt>Storage</dt><dd>Cool, dark, dry</dd></div>
+        </dl>
+      </div>
+      <div class="side-card">
+        <h6>Average Rating</h6>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="font-family:var(--font-mono);font-size:32px;font-weight:700">4.3</div>
+          <div>
+            <div class="stars" id="sideStars"></div>
+            <div style="font-size:11.5px;color:var(--ink-faint);margin-top:3px;font-family:var(--font-mono)">18,204 reviews</div>
+          </div>
+        </div>
+      </div>
+      <div class="side-card">
+        <h6>Price History</h6>
+        <svg viewBox="0 0 280 60" style="width:100%;height:60px" id="sparkline"></svg>
+        <a class="view-all" style="margin-top:8px">View full history <svg class="icon" style="width:12px;height:12px"><use href="#i-arrow-right"/></svg></a>
+      </div>
+      <div class="side-card">
+        <h6>Related Categories</h6>
+        <div class="tag-row">
+          <span class="tag">Vegetables</span><span class="tag">Tubers</span><span class="tag">Fresh Produce</span><span class="tag">Cooking Essentials</span>
+        </div>
+      </div>
+      <div class="contrib-note">
+        <svg class="icon"><use href="#i-users"/></svg>
+        <div>This page has been edited <strong>412 times</strong> by <strong>89 contributors</strong>. <a class="view-all" style="display:inline;color:var(--teal)">Suggest an edit</a></div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<!-- ======================================================= -->
+<!-- ===========================  PAGE 6 — UNIVERSITY  ======================== -->
+<!-- ======================================================= -->
+<main id="page-university" class="hidden">
+  <div class="breadcrumb">
+    <a>Home</a><svg class="icon"><use href="#i-chevron-right"/></svg><a>Universities</a><svg class="icon"><use href="#i-chevron-right"/></svg><a style="color:var(--ink);font-weight:600">BRAC University</a>
+  </div>
+
+  <div class="pd-header">
+    <div class="entity-banner"><svg class="icon"><use href="#i-image"/></svg></div>
+    <div class="entity-header-row">
+      <div class="entity-logo-lg"><svg class="icon"><use href="#i-grad"/></svg></div>
+      <div style="flex:1; min-width:240px;">
+        <h1>BRAC University</h1>
+        <div class="pd-meta-line">
+          <span class="tag teal"><svg class="icon" style="width:11px;height:11px"><use href="#i-check"/></svg> Verified Entity</span>
+          <span class="tag">Private University</span>
+          <span class="ec-meta" style="margin:0"><svg class="icon"><use href="#i-pin"/></svg> Merul Badda, Dhaka</span>
+          <span class="rating-line" style="margin:0">
+            <span class="stars" id="uniStars"></span>
+            <span class="rating-num">4.5</span><span class="rating-count">(2,840 reviews)</span>
+          </span>
+        </div>
+      </div>
+      <div class="pd-actions">
+        <button class="btn btn-outline btn-sm"><svg class="icon" style="width:13px;height:13px"><use href="#i-star"/></svg> Write a Review</button>
+        <button class="btn btn-outline btn-sm"><svg class="icon" style="width:13px;height:13px"><use href="#i-scale"/></svg> Compare</button>
+        <button class="icon-btn"><svg class="icon" style="width:15px;height:15px"><use href="#i-bookmark"/></svg></button>
+        <button class="icon-btn"><svg class="icon" style="width:15px;height:15px"><use href="#i-share"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="pd-layout">
+    <div class="pd-main">
+
+      <section>
+        <h2 class="h-sm">At a glance</h2>
+        <div class="quick-stats cols-3">
+          <div class="qs-card"><div class="lbl">Established</div><div class="val">2001</div></div>
+          <div class="qs-card"><div class="lbl">Students</div><div class="val">18,500+</div></div>
+          <div class="qs-card"><div class="lbl">Faculty</div><div class="val">850+</div></div>
+          <div class="qs-card"><div class="lbl">Departments</div><div class="val">14</div></div>
+          <div class="qs-card"><div class="lbl">Avg. Tuition (Total)</div><div class="val">৳5,50,000</div></div>
+          <div class="qs-card"><div class="lbl">Ranking</div><div class="val" style="font-size:14px">Top 3 Private</div></div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">About</h2>
+        <p class="pd-desc">BRAC University is a private university established in 2001 and affiliated with BRAC, one of the world's largest development organisations. Known for its Computer Science, Business and Architecture programs, it operates a permanent campus in Merul Badda, Dhaka, alongside liberal-arts-style general education requirements uncommon among private universities in the country.</p>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Admission Information</h2>
+        <dl style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
+          <div class="dl-row"><dt>Intakes</dt><dd>Spring, Summer, Fall</dd></div>
+          <div class="dl-row"><dt>Admission Test</dt><dd>Written + Interview</dd></div>
+          <div class="dl-row"><dt>Eligibility</dt><dd>GPA 3.5+ (SSC &amp; HSC)</dd></div>
+          <div class="dl-row"><dt>Application Mode</dt><dd>Online</dd></div>
+        </dl>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Tuition &amp; Fees</h2>
+        <div class="table-scroll"><table class="data-table">
+          <thead><tr><th>Program Level</th><th>Duration</th><th>Avg. Total Cost</th></tr></thead>
+          <tbody>
+            <tr><td>Undergraduate (B.Sc./BBA)</td><td class="mono">4 Years</td><td class="mono" style="font-weight:700">৳5,50,000</td></tr>
+            <tr><td>Graduate (MBA/MS)</td><td class="mono">1.5–2 Years</td><td class="mono" style="font-weight:700">৳4,20,000</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Facilities</h2>
+        <div class="tag-row">
+          <span class="tag">Central Library</span><span class="tag">Computer Labs</span><span class="tag">Hostel &amp; Dormitory</span><span class="tag">Sports Complex</span><span class="tag">Medical Centre</span><span class="tag">Campus-wide Wifi</span><span class="tag">Cafeteria</span><span class="tag">Auditorium</span><span class="tag">Prayer Room</span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Campus Gallery</h2>
+        <div class="gallery-thumbs" id="uniGallery" style="gap:12px;"></div>
+      </section>
+
+      <section>
+        <div class="section-head" style="margin-bottom:16px; border:none; padding-bottom:0">
+          <h2 class="h-sm" style="margin:0; border:none; padding:0">Departments &amp; courses offered</h2>
+        </div>
+        <div id="uniCourses"></div>
+      </section>
+
+      <section>
+        <div class="section-head" style="margin-bottom:16px; border:none; padding-bottom:0">
+          <h2 class="h-sm" style="margin:0; border:none; padding:0">Teachers</h2>
+        </div>
+        <div id="uniTeachers"></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Timeline</h2>
+        <div id="uniTimeline"></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Location</h2>
+        <div class="map-panel" style="height:300px; position:static;">
+          <div class="map-pin lg" style="top:45%;left:48%"><span>BU</span></div>
+          <div class="map-badge"><svg class="icon" style="width:13px;height:13px;color:var(--teal)"><use href="#i-pin"/></svg> Merul Badda, Dhaka</div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Reviews</h2>
+        <div class="review-summary">
+          <div class="rs-big"><div class="n">4.5</div><div class="stars" id="uniRsStars"></div><div class="cnt">2,840 reviews</div></div>
+          <div class="rs-bars" id="uniRsBars"></div>
+        </div>
+        <div id="uniReviewList"></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Related universities</h2>
+        <div class="delta-section" id="uniDelta"></div>
+      </section>
+
+    </div>
+
+    <aside class="pd-sidebar">
+      <div class="side-card">
+        <h6>Quick Facts</h6>
+        <dl>
+          <div class="dl-row"><dt>Established</dt><dd>2001</dd></div>
+          <div class="dl-row"><dt>Type</dt><dd>Private</dd></div>
+          <div class="dl-row"><dt>Campus</dt><dd>Merul Badda, Dhaka</dd></div>
+          <div class="dl-row"><dt>Affiliation</dt><dd>UGC Bangladesh</dd></div>
+        </dl>
+      </div>
+      <div class="side-card">
+        <h6>Average Rating</h6>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="font-family:var(--font-mono);font-size:32px;font-weight:700">4.5</div>
+          <div><div class="stars" id="uniSideStars"></div><div style="font-size:11.5px;color:var(--ink-faint);margin-top:3px;font-family:var(--font-mono)">2,840 reviews</div></div>
+        </div>
+      </div>
+      <div class="side-card">
+        <h6>Related Categories</h6>
+        <div class="tag-row"><span class="tag">Private Universities</span><span class="tag">Dhaka</span><span class="tag">Engineering</span><span class="tag">Business</span></div>
+      </div>
+      <div class="contrib-note">
+        <svg class="icon"><use href="#i-users"/></svg>
+        <div>Edited <strong>318 times</strong> by <strong>64 contributors</strong>. <a class="view-all" style="display:inline;color:var(--teal)">Suggest an edit</a></div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<!-- ======================================================= -->
+<!-- ===========================  PAGE 7 — COURSE  ============================ -->
+<!-- ======================================================= -->
+<main id="page-course" class="hidden">
+  <div class="breadcrumb">
+    <a>Home</a><svg class="icon"><use href="#i-chevron-right"/></svg><a>Courses</a><svg class="icon"><use href="#i-chevron-right"/></svg><a style="color:var(--ink);font-weight:600">Computer Science &amp; Engineering</a>
+  </div>
+
+  <div class="pd-header">
+    <div class="pd-title-row">
+      <div>
+        <h1>Computer Science &amp; Engineering <span class="pd-bn">(CSE)</span></h1>
+        <div class="pd-meta-line">
+          <span class="tag teal"><svg class="icon" style="width:11px;height:11px"><use href="#i-check"/></svg> Verified Entity</span>
+          <span class="tag">Course</span><span class="tag">Engineering</span>
+          <span class="rating-line" style="margin:0">
+            <span class="stars" id="courseStars"></span>
+            <span class="rating-num">4.6</span><span class="rating-count">(1,204 reviews)</span>
+          </span>
+        </div>
+      </div>
+      <div class="pd-actions">
+        <button class="btn btn-outline btn-sm"><svg class="icon" style="width:13px;height:13px"><use href="#i-star"/></svg> Write a Review</button>
+        <button class="btn btn-outline btn-sm"><svg class="icon" style="width:13px;height:13px"><use href="#i-scale"/></svg> Compare</button>
+        <button class="icon-btn"><svg class="icon" style="width:15px;height:15px"><use href="#i-bookmark"/></svg></button>
+        <button class="icon-btn"><svg class="icon" style="width:15px;height:15px"><use href="#i-share"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="pd-layout">
+    <div class="pd-main">
+
+      <section>
+        <h2 class="h-sm">Overview</h2>
+        <p class="pd-desc">Computer Science &amp; Engineering covers the theory and practice of computing — programming, algorithms, data structures, systems and software design. It is the most in-demand engineering degree in Bangladesh, offered at 142 universities, and a common entry point into software, data and technology careers.</p>
+        <div class="quick-stats cols-3" style="margin-top:18px">
+          <div class="qs-card"><div class="lbl">Duration</div><div class="val">4 Years</div></div>
+          <div class="qs-card"><div class="lbl">Avg. Tuition</div><div class="val">৳4,50,000</div></div>
+          <div class="qs-card"><div class="lbl">Avg. Starting Salary</div><div class="val">৳35,000<span style="font-size:11px;color:var(--ink-faint)">/mo</span></div></div>
+          <div class="qs-card"><div class="lbl">Job Demand</div><div class="val" style="font-size:14px">Very High</div></div>
+          <div class="qs-card"><div class="lbl">Difficulty</div><div class="val" style="font-size:14px">High</div></div>
+          <div class="qs-card"><div class="lbl">Degree Type</div><div class="val" style="font-size:13px">B.Sc. Engineering</div></div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Career opportunities</h2>
+        <div class="tag-row">
+          <span class="tag">Software Engineer</span><span class="tag">Data Scientist</span><span class="tag">Systems Analyst</span><span class="tag">ML Engineer</span><span class="tag">DevOps Engineer</span><span class="tag">Product Manager</span><span class="tag">Cybersecurity Analyst</span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Skills learned</h2>
+        <div class="tag-row">
+          <span class="tag">Programming (C/C++/Java/Python)</span><span class="tag">Data Structures &amp; Algorithms</span><span class="tag">Database Systems</span><span class="tag">Operating Systems</span><span class="tag">Computer Networks</span><span class="tag">Machine Learning</span><span class="tag">Software Engineering</span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Subjects by year</h2>
+        <div class="table-scroll"><table class="data-table">
+          <thead><tr><th>Year</th><th>Key Subjects</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">Year 1</td><td>Programming Fundamentals, Discrete Mathematics, Digital Logic Design</td></tr>
+            <tr><td class="mono">Year 2</td><td>Data Structures, Algorithms, Database Systems, OOP</td></tr>
+            <tr><td class="mono">Year 3</td><td>Operating Systems, Computer Networks, Software Engineering, AI</td></tr>
+            <tr><td class="mono">Year 4</td><td>Machine Learning, Thesis / Capstone Project, Electives</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section>
+        <div class="section-head" style="margin-bottom:16px; border:none; padding-bottom:0">
+          <h2 class="h-sm" style="margin:0; border:none; padding:0">Universities offering it</h2>
+        </div>
+        <div id="courseUniversities"></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Average salary by experience</h2>
+        <div class="table-scroll"><table class="data-table">
+          <thead><tr><th>Experience Level</th><th>Avg. Salary</th><th style="width:160px">Relative</th></tr></thead>
+          <tbody id="careerTable"></tbody>
+        </table></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Reviews</h2>
+        <div class="review-summary">
+          <div class="rs-big"><div class="n">4.6</div><div class="stars" id="courseRsStars"></div><div class="cnt">1,204 reviews</div></div>
+          <div class="rs-bars" id="courseRsBars"></div>
+        </div>
+        <div id="courseReviewList"></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">How this course connects</h2>
+        <div class="delta-section" id="courseDelta"></div>
+      </section>
+
+    </div>
+
+    <aside class="pd-sidebar">
+      <div class="side-card">
+        <h6>Quick Facts</h6>
+        <dl>
+          <div class="dl-row"><dt>Duration</dt><dd>4 Years</dd></div>
+          <div class="dl-row"><dt>Degree Type</dt><dd>B.Sc. Engineering</dd></div>
+          <div class="dl-row"><dt>Difficulty</dt><dd>High</dd></div>
+          <div class="dl-row"><dt>Mode</dt><dd>On-campus</dd></div>
+        </dl>
+      </div>
+      <div class="side-card">
+        <h6>Average Rating</h6>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="font-family:var(--font-mono);font-size:32px;font-weight:700">4.6</div>
+          <div><div class="stars" id="courseSideStars"></div><div style="font-size:11.5px;color:var(--ink-faint);margin-top:3px;font-family:var(--font-mono)">1,204 reviews</div></div>
+        </div>
+      </div>
+      <div class="side-card">
+        <h6>Related Categories</h6>
+        <div class="tag-row"><span class="tag">Engineering</span><span class="tag">Technology</span><span class="tag">4-Year Degrees</span></div>
+      </div>
+      <div class="contrib-note">
+        <svg class="icon"><use href="#i-users"/></svg>
+        <div>Edited <strong>206 times</strong> by <strong>41 contributors</strong>. <a class="view-all" style="display:inline;color:var(--teal)">Suggest an edit</a></div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<!-- ======================================================= -->
+<!-- ===========================  PAGE 8 — TEACHER  =========================== -->
+<!-- ======================================================= -->
+<main id="page-teacher" class="hidden">
+  <div class="breadcrumb">
+    <a>Home</a><svg class="icon"><use href="#i-chevron-right"/></svg><a>Teachers</a><svg class="icon"><use href="#i-chevron-right"/></svg><a style="color:var(--ink);font-weight:600">Dr. Farhana Islam</a>
+  </div>
+
+  <div class="pd-header">
+    <div class="entity-header-row" style="align-items:flex-start;">
+      <div class="entity-logo-lg circle"><svg class="icon"><use href="#i-user"/></svg></div>
+      <div style="flex:1; min-width:240px;">
+        <h1 style="font-size:26px;">Dr. Farhana Islam</h1>
+        <div class="pd-meta-line">
+          <span class="tag teal"><svg class="icon" style="width:11px;height:11px"><use href="#i-check"/></svg> Verified Entity</span>
+          <span class="tag">Teacher</span>
+          <span class="rating-line" style="margin:0">
+            <span class="stars" id="teacherStars"></span>
+            <span class="rating-num">4.7</span><span class="rating-count">(612 reviews)</span>
+          </span>
+        </div>
+        <div class="ec-meta" style="margin-top:8px;margin-bottom:0;"><svg class="icon"><use href="#i-grad"/></svg> Professor, Dept. of CSE — BRAC University</div>
+      </div>
+      <div class="pd-actions">
+        <button class="btn btn-outline btn-sm"><svg class="icon" style="width:13px;height:13px"><use href="#i-star"/></svg> Write a Review</button>
+        <button class="icon-btn"><svg class="icon" style="width:15px;height:15px"><use href="#i-bookmark"/></svg></button>
+        <button class="icon-btn"><svg class="icon" style="width:15px;height:15px"><use href="#i-share"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="pd-layout">
+    <div class="pd-main">
+
+      <section>
+        <h2 class="h-sm">At a glance</h2>
+        <div class="quick-stats">
+          <div class="qs-card"><div class="lbl">Experience</div><div class="val">12+ Yrs</div></div>
+          <div class="qs-card"><div class="lbl">Courses Taught</div><div class="val">6</div></div>
+          <div class="qs-card"><div class="lbl">Students Mentored</div><div class="val">3,000+</div></div>
+          <div class="qs-card"><div class="lbl">Publications</div><div class="val">24</div></div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">About</h2>
+        <p class="pd-desc">Dr. Farhana Islam is a Professor in the Department of Computer Science &amp; Engineering at BRAC University. Her research focuses on machine learning, data mining and applied AI for healthcare, and she has supervised more than 40 undergraduate and graduate theses.</p>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Subjects taught</h2>
+        <div class="tag-row">
+          <span class="tag">Data Structures</span><span class="tag">Algorithms</span><span class="tag">Machine Learning</span><span class="tag">Database Systems</span><span class="tag">Artificial Intelligence</span><span class="tag">Data Mining</span>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head" style="margin-bottom:16px; border:none; padding-bottom:0">
+          <h2 class="h-sm" style="margin:0; border:none; padding:0">Courses</h2>
+        </div>
+        <div id="teacherCourses"></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Research &amp; publications</h2>
+        <div class="table-scroll"><table class="data-table">
+          <thead><tr><th>Title</th><th>Journal / Conference</th><th>Year</th></tr></thead>
+          <tbody>
+            <tr><td>Optimizing Neural Network Inference on Edge Devices</td><td>IEEE Access</td><td class="mono">2023</td></tr>
+            <tr><td>A Comparative Study of Data Mining Techniques in Healthcare Records</td><td>Journal of Biomedical Informatics</td><td class="mono">2021</td></tr>
+            <tr><td>Federated Learning for Privacy-Preserving Mobile Applications</td><td>ICML Workshops</td><td class="mono">2022</td></tr>
+            <tr><td>Improving Recommendation Systems Using Hybrid Filtering</td><td>ACM Trans. on Information Systems</td><td class="mono">2020</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Achievements</h2>
+        <div class="tag-row">
+          <span class="tag">Best Teacher Award 2022</span><span class="tag">Research Excellence Grant</span><span class="tag">IEEE Senior Member</span><span class="tag">Dean's List Mentor 2019–2023</span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Office hours</h2>
+        <div class="table-scroll"><table class="data-table">
+          <thead><tr><th>Day</th><th>Time</th><th>Room</th></tr></thead>
+          <tbody>
+            <tr><td>Sunday</td><td class="mono">2:00 – 4:00 PM</td><td>4B-12</td></tr>
+            <tr><td>Tuesday</td><td class="mono">10:00 – 12:00 PM</td><td>4B-12</td></tr>
+            <tr><td>Thursday</td><td class="mono">2:00 – 4:00 PM</td><td>4B-12</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Reviews</h2>
+        <div class="review-summary">
+          <div class="rs-big"><div class="n">4.7</div><div class="stars" id="teacherRsStars"></div><div class="cnt">612 reviews</div></div>
+          <div class="rs-bars" id="teacherRsBars"></div>
+        </div>
+        <div id="teacherReviewList"></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Related teachers</h2>
+        <div class="delta-section" id="teacherDelta"></div>
+      </section>
+
+    </div>
+
+    <aside class="pd-sidebar">
+      <div class="side-card">
+        <h6>Quick Facts</h6>
+        <dl>
+          <div class="dl-row"><dt>Department</dt><dd>CSE</dd></div>
+          <div class="dl-row"><dt>University</dt><dd>BRAC University</dd></div>
+          <div class="dl-row"><dt>Office</dt><dd>Room 4B-12</dd></div>
+          <div class="dl-row"><dt>Email</dt><dd style="font-size:12px">f.islam@bracu.ac.bd</dd></div>
+        </dl>
+      </div>
+      <div class="side-card">
+        <h6>Average Rating</h6>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="font-family:var(--font-mono);font-size:32px;font-weight:700">4.7</div>
+          <div><div class="stars" id="teacherSideStars"></div><div style="font-size:11.5px;color:var(--ink-faint);margin-top:3px;font-family:var(--font-mono)">612 reviews</div></div>
+        </div>
+      </div>
+      <div class="contrib-note">
+        <svg class="icon"><use href="#i-users"/></svg>
+        <div>Edited <strong>52 times</strong> by <strong>19 contributors</strong>. <a class="view-all" style="display:inline;color:var(--teal)">Suggest an edit</a></div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<!-- ======================================================= -->
+<!-- ===========================  PAGE 9 — SHOP  =============================== -->
+<!-- ======================================================= -->
+<main id="page-shop" class="hidden">
+  <div class="breadcrumb">
+    <a>Home</a><svg class="icon"><use href="#i-chevron-right"/></svg><a>Shops</a><svg class="icon"><use href="#i-chevron-right"/></svg><a style="color:var(--ink);font-weight:600">Shwapno</a>
+  </div>
+
+  <div class="pd-header">
+    <div class="entity-header-row" style="align-items:flex-start;">
+      <div class="entity-logo-lg"><svg class="icon"><use href="#i-store"/></svg></div>
+      <div style="flex:1; min-width:240px;">
+        <h1>Shwapno</h1>
+        <div class="pd-meta-line">
+          <span class="tag teal"><svg class="icon" style="width:11px;height:11px"><use href="#i-check"/></svg> Verified Entity</span>
+          <span class="tag">Supermarket Chain</span>
+          <span class="rating-line" style="margin:0">
+            <span class="stars" id="shopStars"></span>
+            <span class="rating-num">4.2</span><span class="rating-count">(8,400 reviews)</span>
+          </span>
+        </div>
+      </div>
+      <div class="pd-actions">
+        <button class="btn btn-outline btn-sm"><svg class="icon" style="width:13px;height:13px"><use href="#i-star"/></svg> Write a Review</button>
+        <button class="icon-btn"><svg class="icon" style="width:15px;height:15px"><use href="#i-bookmark"/></svg></button>
+        <button class="icon-btn"><svg class="icon" style="width:15px;height:15px"><use href="#i-share"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="pd-layout">
+    <div class="pd-main">
+
+      <section>
+        <h2 class="h-sm">At a glance</h2>
+        <div class="quick-stats">
+          <div class="qs-card"><div class="lbl">Branches</div><div class="val">220+</div></div>
+          <div class="qs-card"><div class="lbl">Products Listed</div><div class="val">18,500+</div></div>
+          <div class="qs-card"><div class="lbl">Founded</div><div class="val">2008</div></div>
+          <div class="qs-card"><div class="lbl">Avg. Rating</div><div class="val">4.2</div></div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">About</h2>
+        <p class="pd-desc">Shwapno is one of Bangladesh's largest organized retail supermarket chains, operating over 220 outlets nationwide. It offers groceries, fresh produce, household essentials and packaged goods under one roof, and is part of ACI Limited.</p>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Current offers</h2>
+        <div class="promo-row" id="shopOffers"></div>
+      </section>
+
+      <section>
+        <div class="section-head" style="margin-bottom:16px; border:none; padding-bottom:0">
+          <h2 class="h-sm" style="margin:0; border:none; padding:0">Popular products</h2>
+        </div>
+        <div class="product-grid" id="shopProductGrid"></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Price comparison — Potato (per kg)</h2>
+        <div class="chart-card" id="shopCompareList" style="padding:6px 22px"></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Branches near you</h2>
+        <div class="map-panel" style="height:320px; position:static;">
+          <div class="map-pin lg" style="top:30%;left:35%"><span>1</span></div>
+          <div class="map-pin" style="top:50%;left:55%"><span>2</span></div>
+          <div class="map-pin" style="top:65%;left:30%"><span>3</span></div>
+          <div class="map-pin" style="top:25%;left:70%"><span>4</span></div>
+          <div class="map-badge"><svg class="icon" style="width:13px;height:13px;color:var(--teal)"><use href="#i-pin"/></svg> 220+ branches nationwide</div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Opening hours</h2>
+        <div class="table-scroll"><table class="data-table">
+          <thead><tr><th>Day</th><th>Hours</th></tr></thead>
+          <tbody>
+            <tr><td>Saturday – Thursday</td><td class="mono">9:00 AM – 10:00 PM</td></tr>
+            <tr><td>Friday</td><td class="mono">9:00 AM – 12:30 PM, 2:30 – 10:00 PM</td></tr>
+          </tbody>
+        </table></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Reviews</h2>
+        <div class="review-summary">
+          <div class="rs-big"><div class="n">4.2</div><div class="stars" id="shopRsStars"></div><div class="cnt">8,400 reviews</div></div>
+          <div class="rs-bars" id="shopRsBars"></div>
+        </div>
+        <div id="shopReviewList"></div>
+      </section>
+
+      <section>
+        <h2 class="h-sm">Related shops</h2>
+        <div class="delta-section" id="shopDelta"></div>
+      </section>
+
+    </div>
+
+    <aside class="pd-sidebar">
+      <div class="side-card">
+        <h6>Quick Facts</h6>
+        <dl>
+          <div class="dl-row"><dt>Founded</dt><dd>2008</dd></div>
+          <div class="dl-row"><dt>Branches</dt><dd>220+</dd></div>
+          <div class="dl-row"><dt>Headquarters</dt><dd>Dhaka</dd></div>
+          <div class="dl-row"><dt>Parent Company</dt><dd>ACI Limited</dd></div>
+        </dl>
+      </div>
+      <div class="side-card">
+        <h6>Categories Sold</h6>
+        <div class="tag-row"><span class="tag">Groceries</span><span class="tag">Fresh Produce</span><span class="tag">Household</span><span class="tag">Packaged Foods</span></div>
+      </div>
+      <div class="contrib-note">
+        <svg class="icon"><use href="#i-users"/></svg>
+        <div>Edited <strong>140 times</strong> by <strong>37 contributors</strong>. <a class="view-all" style="display:inline;color:var(--teal)">Suggest an edit</a></div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="logo" style="color:#fff;margin-bottom:12px">
+        <svg width="24" height="24" viewBox="0 0 26 26"><path d="M13 24V13" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M13 13C13 13 7 11 5 4" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M13 13C13 13 13 9 13 2" stroke="#3FA8AC" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M13 13C13 13 19 11 21 4" stroke="#D88456" stroke-width="2" stroke-linecap="round" fill="none"/><circle cx="5" cy="4" r="2" fill="#fff"/><circle cx="13" cy="2" r="2" fill="#3FA8AC"/><circle cx="21" cy="4" r="2" fill="#D88456"/></svg>
+        Desh<span class="accent">Info</span>
+      </div>
+      <p style="font-size:12.5px;color:#7C879C;max-width:240px">A connected, community-verified record of every product, place, institution and professional in Bangladesh.</p>
+    </div>
+    <div><h5>Platform</h5><ul><li>How it works</li><li>Add an Entity</li><li>Become a Contributor</li><li>API for Developers</li></ul></div>
+    <div><h5>Categories</h5><ul><li>Products</li><li>Universities</li><li>Restaurants</li><li>Doctors &amp; Hospitals</li></ul></div>
+    <div><h5>Company</h5><ul><li>About DeshInfo</li><li>Careers</li><li>Press</li><li>Contact</li></ul></div>
+    <div><h5>Legal</h5><ul><li>Privacy Policy</li><li>Terms of Service</li><li>Content Guidelines</li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 DeshInfo. All rights reserved.</span>
+    <span>Made for Bangladesh</span>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   ICON + STAR HELPERS
+   ============================================================ */
+function ic(name, cls){ return `<svg class="icon ${cls||''}"><use href="#i-${name}"/></svg>`; }
+function stars(rating, size){
+  size = size || 14;
+  let out = '';
+  for(let i=1;i<=5;i++){
+    let fill = rating >= i ? 'var(--gold)' : (rating >= i-0.5 ? 'url(#halfGrad)' : 'none');
+    let stroke = rating >= i-0.5 ? 'var(--gold)' : 'var(--line-strong)';
+    out += `<svg viewBox="0 0 24 24" style="width:${size}px;height:${size}px;fill:${fill};stroke:${stroke};stroke-width:1.5"><use href="#i-star"/></svg>`;
+  }
+  return out;
+}
+document.querySelector('svg[style="display:none"] defs').insertAdjacentHTML('beforeend',
+  `<linearGradient id="halfGrad"><stop offset="50%" stop-color="var(--gold)"/><stop offset="50%" stop-color="transparent"/></linearGradient>`);
+
+/* ============================================================
+   DELTA-FLOW relationship visualizer
+   ============================================================ */
+function deltaFlow(relLabel, items){
+  const rowH = 38;
+  const h = items.length * rowH;
+  const w = 86;
+  let paths = '';
+  items.forEach((it,i)=>{
+    const x0=3, y0=h/2, x1=w-3, y1=i*rowH + rowH/2, midX = w/2;
+    paths += `<path d="M${x0},${y0} C${midX},${y0} ${midX},${y1} ${x1},${y1}" stroke="#C7CDD0" stroke-width="1.5" fill="none"/>`;
+  });
+  let nodes = `<circle cx="3" cy="${h/2}" r="4" fill="#1A2740"/>`;
+  items.forEach((it,i)=>{ nodes += `<circle cx="${w-3}" cy="${i*rowH+rowH/2}" r="3.2" fill="#0F6E72"/>`; });
+  const svg = `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" style="flex-shrink:0">${paths}${nodes}</svg>`;
+  const labels = items.map(it=>`<div class="delta-chip" style="height:${rowH}px"><span class="tealdot"></span>${it}</div>`).join('');
+  return `<div class="delta-row">
+    <div class="delta-source"><span class="dot"></span>${relLabel}</div>
+    ${svg}
+    <div class="delta-chips">${labels}</div>
+  </div>`;
+}
+
+/* ============================================================
+   RICH ROW + TEACHER ROW + TIMELINE + PROMO helpers
+   ============================================================ */
+function richRow(o){
+  const statsHtml = (o.stats||[]).map(s=>`<div class="stat-chip">${ic(s.icon)}<div><div class="sc-label">${s.label}</div><div class="sc-value">${s.value}</div></div></div>`).join('');
+  return `<div class="rrow">
+    <div class="rrow-thumb">${ic(o.icon)}</div>
+    <div class="rrow-body">
+      <div class="rrow-title-row"><span class="rrow-title">${o.title}</span><span class="tag teal">${o.type}</span>${ic('check','verified-mark')}</div>
+      <div class="rating-line" style="margin-bottom:7px">${stars(o.rating)}<span class="rating-num">${o.rating}</span><span class="rating-count">(${o.count})</span></div>
+      <p class="rrow-desc">${o.desc}</p>
+      <div class="stat-chip-row">${statsHtml}</div>
+    </div>
+    ${o.photo?`<div class="rrow-photo">${ic(o.photoIcon||'image')}</div>`:''}
+  </div>`;
+}
+function teacherRow(o){
+  return `<div class="trow">
+    <div class="trow-photo">${ic('user')}</div>
+    <div class="trow-body">
+      <div class="rrow-title-row"><span class="rrow-title">${o.title}</span><span class="tag teal">Teacher</span>${ic('check','verified-mark')}</div>
+      <div class="ec-meta" style="margin-bottom:0">${ic('grad')} ${o.meta}</div>
+      <div class="tstat-row">${o.stats.map(s=>`<div class="tstat">${ic(s.icon)} ${s.label} <b>${s.value}</b></div>`).join('')}</div>
+      <p class="rrow-desc" style="margin-bottom:0">${o.desc}</p>
+    </div>
+  </div>`;
+}
+function timelineHTML(items){
+  return `<div class="timeline">${items.map(it=>`<div class="tl-item"><div class="tl-year">${it.year}</div><div class="tl-desc">${it.desc}</div></div>`).join('')}</div>`;
+}
+function promoHTML(items){
+  return items.map(p=>`<div class="promo-card"><div class="ptitle">${ic('percent')}${p.title}</div><div class="psub">${p.sub}</div></div>`).join('');
+}
+function reviewSummaryBars(){
+  return ratingBars.map(b=>`<div class="rs-bar-row"><span class="lbl">${b.star} ★</span><div class="rs-bar-track"><div class="fill" style="width:${b.pct}%"></div></div><span class="pct">${b.pct}%</span></div>`).join('');
+}
+function reviewListHTML(list){
+  return list.map(r=>`
+    <div class="review-card">
+      <div class="rev-top">
+        <div class="mini-avatar" style="width:36px;height:36px;font-size:12px">${r.init}</div>
+        <div>
+          <div class="rev-name-row"><span class="rev-name">${r.name}</span>${r.verified?`<span class="verified-tag">${ic('check')} Verified</span>`:''}</div>
+          <div class="rev-date">${r.date}</div>
+        </div>
+        <div style="margin-left:auto">${stars(r.rating,13)}</div>
+      </div>
+      <p class="rev-text">${r.text}</p>
+      <div class="rev-footer"><button class="helpful-btn">${ic('thumb')} Helpful (${r.helpful})</button></div>
+    </div>`).join('');
+}
+function productCardHTML(p){
+  return `
+    <div class="pcard">
+      <input type="checkbox" class="compare-check" ${p.compare?'checked':''}>
+      <div class="ph">${ic(p.icon)}</div>
+      <div class="ec-body">
+        <div class="ec-meta" style="margin-bottom:5px">${p.cat}</div>
+        <div class="ec-title-row" style="align-items:flex-start"><span class="ec-title" style="font-size:13.5px;line-height:1.3;min-height:35px">${p.name}</span>${ic('check','verified-mark')}</div>
+        <div class="rating-line">${stars(p.rating,12)}<span class="rating-num">${p.rating}</span><span class="rating-count">(${p.count})</span></div>
+        <div class="price-line"><span class="amt">৳${p.price}</span><span class="unit">${p.unit}</span>
+          <span class="trend-chip ${p.trend}">${ic(p.trend==='down'?'trend-down':'trend-up')} ${p.trendVal}</span>
+        </div>
+        <div class="avail-line">${ic('store')} Available at ${p.shops} shops</div>
+      </div>
+    </div>`;
+}
+function shopRowsHTML(list){
+  return list.map(s=>`
+    <div class="shop-row">
+      <div class="shop-logo">${s.name.slice(0,2).toUpperCase()}</div>
+      <div><div class="shop-name">${s.name}</div><div class="shop-updated">Last updated ${s.updated}</div></div>
+      <span class="shop-price">৳${s.price}/kg</span>
+      ${ic('link')}
+    </div>`).join('');
+}
+
+/* ============================================================
+   DATA — global / homepage
+   ============================================================ */
+const categories = [
+  {icon:'grid', label:'Products', count:'512,900+'},
+  {icon:'grad', label:'Universities', count:'1,240+'},
+  {icon:'book', label:'Courses', count:'8,600+'},
+  {icon:'users', label:'Teachers', count:'45,300+'},
+  {icon:'utensils', label:'Restaurants', count:'120,400+'},
+  {icon:'hospital', label:'Hospitals', count:'15,200+'},
+  {icon:'store', label:'Shops', count:'90,800+'},
+  {icon:'briefcase', label:'Freelancers', count:'60,100+'},
+  {icon:'building', label:'Companies', count:'35,600+'},
+  {icon:'pin', label:'Places', count:'25,000+'},
+];
+
+const pulse = {
+  trending: [
+    {term:'CSE Admission 2026', meta:'Courses', up:true, pct:'+18%'},
+    {term:'Walton Refrigerator', meta:'Products', up:true, pct:'+12%'},
+    {term:'BRAC University', meta:'Universities', up:false, pct:'-3%'},
+    {term:'Dhaka Metro Rail Fare', meta:'Places', up:true, pct:'+9%'},
+  ],
+  updated: [
+    {name:'BUET — Computer Science Dept.', meta:'Departments list refreshed'},
+    {name:'Shwapno — Dhanmondi 2', meta:'Opening hours corrected'},
+    {name:'Dr. Farhana Islam', meta:'New publication added'},
+    {name:'Square Hospital', meta:'Facility list updated'},
+  ],
+  reviews: [
+    {init:'MH', name:'Square Hospital', rating:5, text:'Clean facilities and quick emergency response time.'},
+    {init:'TR', name:'AIUB', rating:4, text:'Solid CSE labs, but admission process is slow.'},
+    {init:'SK', name:'Pran Mango Juice', rating:3, text:'Good taste but sugar content is a bit high for me.'},
+  ],
+  prices: [
+    {name:'Potato (per kg)', old:'৳38', now:'৳35', down:true},
+    {name:'Walton RFG (single door)', old:'৳24,500', now:'৳25,900', down:false},
+    {name:'Rupchanda Soybean Oil (5L)', old:'৳890', now:'৳865', down:true},
+  ]
+};
+
+const featured = [
+  {type:'University', icon:'grad', title:'BRAC University', meta:'Mohakhali, Dhaka', rating:4.5, count:'2,840', tags:['Private','Top 5 CSE']},
+  {type:'Restaurant', icon:'utensils', title:'Kasturi Restaurant', meta:'Banani, Dhaka', rating:4.5, count:'6,210', tags:['Bengali','৳৳']},
+  {type:'Product', icon:'grid', title:'Walton WMD Refrigerator', meta:'Home Appliances', rating:4.2, count:'3,108', tags:['Avg ৳25,900']},
+  {type:'Hospital', icon:'hospital', title:'Square Hospital', meta:'Panthapath, Dhaka', rating:4.3, count:'5,420', tags:['Private','24/7 Emergency']},
+  {type:'Course', icon:'book', title:'Computer Science & Eng.', meta:'Offered at 142 universities', rating:4.6, count:'1,204', tags:['High Demand']},
+  {type:'Company', icon:'briefcase', title:'Brain Station 23', meta:'Software Company • Dhaka', rating:4.1, count:'940', tags:['IT Services']},
+];
+
+const filterTabs = [
+  {label:'All', count:447, active:true},{label:'Courses', count:120},{label:'Universities', count:85},
+  {label:'Teachers', count:210},{label:'Books', count:14},{label:'Companies', count:18},
+];
+
+/* Search results — rich rows, grouped by section. Each item carries its
+   own stat-chip set so the same richRow()/teacherRow() renderer can be
+   reused for university course offerings, teacher rosters, etc. */
+const searchSections = [
+  {title:'Courses', icon:'book', total:120, type:'rich', items:[
+    {icon:'monitor', type:'Course', title:'CSE — Computer Science &amp; Engineering', rating:4.6, count:'1,204', desc:'Learn computer science fundamentals, programming, algorithms, data structures, software engineering and more.', stats:[{icon:'clock',label:'Duration',value:'4 Years'},{icon:'bar',label:'Avg. Cost',value:'৳4,50,000'},{icon:'trend-up',label:'Job Demand',value:'Very High'},{icon:'award',label:'Difficulty',value:'High'}], photo:true, photoIcon:'monitor'},
+    {icon:'bolt', type:'Course', title:'EEE — Electrical &amp; Electronic Engineering', rating:4.4, count:'820', desc:'Study electrical systems, electronics, control systems, power and communication technologies.', stats:[{icon:'clock',label:'Duration',value:'4 Years'},{icon:'bar',label:'Avg. Cost',value:'৳4,00,000'},{icon:'trend-up',label:'Job Demand',value:'High'},{icon:'award',label:'Difficulty',value:'Medium'}], photo:true, photoIcon:'bolt'},
+  ]},
+  {title:'Universities', icon:'grad', total:85, type:'rich', items:[
+    {icon:'grad', type:'University', title:'BRAC University', rating:4.5, count:'2,840', desc:"One of Bangladesh's leading private universities, known for strong CSE and Business programs.", stats:[{icon:'calendar',label:'Established',value:'2001'},{icon:'building',label:'Type',value:'Private'},{icon:'users',label:'Students',value:'18,500+'},{icon:'bar',label:'Avg. Tuition',value:'৳5,50,000'}], photo:true, photoIcon:'building'},
+    {icon:'grad', type:'University', title:'North South University', rating:4.4, count:'1,800', desc:'A prominent private university in Bashundhara, recognised for diverse undergraduate programs.', stats:[{icon:'calendar',label:'Established',value:'1992'},{icon:'building',label:'Type',value:'Private'},{icon:'users',label:'Students',value:'22,000+'},{icon:'bar',label:'Avg. Tuition',value:'৳5,20,000'}], photo:true, photoIcon:'building'},
+  ]},
+  {title:'Teachers', icon:'users', total:210, type:'teacher', items:[
+    {title:'Dr. Farhana Islam', meta:'Professor, CSE Department — BRAC University', rating:4.7, count:'612', stats:[{icon:'clock',label:'Experience',value:'15+ Years'},{icon:'book',label:'Courses',value:'6'},{icon:'users',label:'Students',value:'3,000+'}], desc:'Research interests include Machine Learning, Data Mining and Applied AI for healthcare.'},
+  ]},
+  {title:'Books', icon:'book', total:14, type:'rich', items:[
+    {icon:'book', type:'Book', title:'Introduction to Algorithms', rating:4.7, count:'1,204', desc:'Cormen, Leiserson, Rivest, Stein — the standard reference for algorithms and data structures.', stats:[{icon:'book',label:'Pages',value:'1,312'},{icon:'calendar',label:'Edition',value:'3rd'},{icon:'grid',label:'Subject',value:'Algorithms'}], photo:false},
+    {icon:'book', type:'Book', title:'Database Management Systems', rating:4.4, count:'612', desc:'Raghu Ramakrishnan — a widely used textbook covering relational databases and SQL.', stats:[{icon:'book',label:'Pages',value:'1,084'},{icon:'calendar',label:'Edition',value:'3rd'},{icon:'grid',label:'Subject',value:'Databases'}], photo:false},
+  ]},
+  {title:'Companies', icon:'briefcase', total:18, type:'rich', items:[
+    {icon:'briefcase', type:'Company', title:'Brain Station 23', rating:4.1, count:'940', desc:'A leading software development company in Dhaka, frequently hiring CSE graduates.', stats:[{icon:'calendar',label:'Founded',value:'2006'},{icon:'users',label:'Employees',value:'700+'},{icon:'briefcase',label:'Industry',value:'Software'}], photo:false},
+    {icon:'briefcase', type:'Company', title:'Therap (BD) Ltd.', rating:4.3, count:'1,120', desc:'A healthcare technology company with one of the largest software teams in Bangladesh.', stats:[{icon:'calendar',label:'Founded',value:'2008'},{icon:'users',label:'Employees',value:'1,500+'},{icon:'briefcase',label:'Industry',value:'Healthcare IT'}], photo:false},
+  ]},
+];
+
+const catChips = [
+  {label:'Bengali', active:true},{label:'Chinese'},{label:'Thai'},{label:'Fast Food'},{label:'Cafe & Bakery'},
+  {label:'Dhaka', active:true},{label:'Chattogram'},{label:'Sylhet'},
+];
+
+const restaurants = [
+  {name:'Kasturi Restaurant', area:'Banani, Dhaka', cuisine:['Bengali','Mughlai'], rating:4.5, count:'6,210', price:'৳৳', open:true, desc:'Long-standing Bengali kitchen known for kacchi biryani and slow-cooked curries.'},
+  {name:'Star Kabab & Restaurant', area:'Dhanmondi, Dhaka', cuisine:['Bengali','Kebab'], rating:4.3, count:'4,880', price:'৳', open:true, desc:'Budget-friendly chain famous for plain polao and beef bhuna.'},
+  {name:'Sultan\'s Dine', area:'Gulshan, Dhaka', cuisine:['Bengali','Mughlai'], rating:4.6, count:'9,140', price:'৳৳', open:true, desc:'Specialises in mutton kacchi served on banana leaf in clay pots.'},
+  {name:'Pizza Burg', area:'Mirpur, Dhaka', cuisine:['Fast Food'], rating:4.0, count:'2,310', price:'৳', open:false, desc:'Local fast-food chain popular for affordable burger and pizza combos.'},
+  {name:'Khazana Restaurant', area:'Banani, Dhaka', cuisine:['North Indian','Bengali'], rating:4.4, count:'3,402', price:'৳৳৳', open:true, desc:'Themed fine-dining spot known for tandoori dishes and live music nights.'},
+  {name:'Coffee World', area:'Dhanmondi, Dhaka', cuisine:['Cafe & Bakery'], rating:4.2, count:'1,860', price:'৳৳', open:true, desc:'Popular study and meet-up cafe with strong wifi and pastry counter.'},
+];
+
+const productCategories = [
+  {icon:'grid', name:'Potato', cat:'Groceries', rating:4.3, count:'18,204', price:'35', unit:'/kg', trend:'down', trendVal:'4.2%', shops:'2,140', compare:false},
+  {icon:'monitor', name:'Walton WMD Refrigerator (236L)', cat:'Home Appliances', rating:4.2, count:'3,108', price:'25,900', unit:'', trend:'up', trendVal:'5.7%', shops:'412', compare:true},
+  {icon:'grid', name:'Pran Mango Juice (1L)', cat:'Groceries', rating:3.9, count:'5,640', price:'130', unit:'', trend:'down', trendVal:'1.1%', shops:'4,820', compare:false},
+  {icon:'shirt', name:'Aarong Cotton Panjabi', cat:'Fashion', rating:4.6, count:'2,012', price:'1,890', unit:'', trend:'up', trendVal:'2.3%', shops:'68', compare:false},
+  {icon:'pill', name:'Square Toilet Soap (100g)', cat:'Health & Beauty', rating:4.0, count:'7,330', price:'55', unit:'', trend:'down', trendVal:'0.8%', shops:'5,140', compare:false},
+  {icon:'monitor', name:'Walton WMD Refrigerator (310L)', cat:'Home Appliances', rating:4.4, count:'1,940', price:'34,500', unit:'', trend:'down', trendVal:'2.0%', shops:'380', compare:true},
+  {icon:'grid', name:'Fresh Eggs (Dozen)', cat:'Groceries', rating:4.1, count:'9,902', price:'150', unit:'', trend:'up', trendVal:'6.4%', shops:'6,210', compare:false},
+  {icon:'grid', name:'Symphony Z42 Smartphone', cat:'Mobile & Gadgets', rating:3.8, count:'1,204', price:'9,990', unit:'', trend:'down', trendVal:'3.5%', shops:'210', compare:false},
+  {icon:'monitor', name:'Minister 32" LED Television', cat:'Electronics', rating:4.0, count:'1,880', price:'13,500', unit:'', trend:'up', trendVal:'1.5%', shops:'290', compare:false},
+  {icon:'grid', name:'Rupchanda Soybean Oil (5L)', cat:'Groceries', rating:4.2, count:'12,440', price:'865', unit:'', trend:'down', trendVal:'2.8%', shops:'5,900', compare:false},
+  {icon:'shirt', name:'Yellow Cotton Saree', cat:'Fashion', rating:4.5, count:'880', price:'2,450', unit:'', trend:'up', trendVal:'4.0%', shops:'120', compare:false},
+  {icon:'grid', name:'Samsung Galaxy A14', cat:'Mobile & Gadgets', rating:4.3, count:'4,210', price:'19,999', unit:'', trend:'down', trendVal:'1.9%', shops:'540', compare:false},
+];
+
+const galleryItems = ['image','camera','image','camera'];
+const regionPrices = [
+  {region:'Dhaka', price:35, max:40},
+  {region:'Chattogram', price:33, max:40},
+  {region:'Rajshahi', price:28, max:40},
+  {region:'Sylhet', price:38, max:40},
+  {region:'Khulna', price:30, max:40},
+];
+const shopPrices = [
+  {name:'Shwapno', price:38, updated:'3h ago'},
+  {name:'Agora', price:40, updated:'5h ago'},
+  {name:'Meena Bazar', price:34, updated:'1h ago'},
+  {name:'Karwan Bazar (Local)', price:28, updated:'40m ago'},
+];
+const relatedProducts = [
+  {name:'Tomato', icon:'grid'},{name:'Onion', icon:'grid'},{name:'Garlic', icon:'grid'},
+  {name:'Green Chili', icon:'grid'},{name:'Sweet Potato', icon:'grid'},{name:'Cauliflower', icon:'grid'},
+];
+const ratingBars = [
+  {star:5, pct:58},{star:4, pct:24},{star:3, pct:10},{star:2, pct:5},{star:1, pct:3},
+];
+const reviews = [
+  {init:'MR', name:'Maliha Rahman', verified:true, date:'2 days ago', rating:5, helpful:24, text:'Always fresh when I buy from Karwan Bazar early morning. Great value for cooking everyday tarkari.'},
+  {init:'SA', name:'Shahriar Alam', verified:true, date:'1 week ago', rating:4, helpful:18, text:'Quality is consistent across Shwapno branches. Prices are slightly higher than local markets though.'},
+  {init:'NJ', name:'Nusrat Jahan', verified:false, date:'2 weeks ago', rating:4, helpful:9, text:'Good for making bhorta. Wish there was a size/grade filter when buying in bulk.'},
+  {init:'KH', name:'Kamrul Hasan', verified:true, date:'3 weeks ago', rating:3, helpful:6, text:'Recent batch from Agora had a few spoiled ones. Otherwise reliable.'},
+];
+
+/* ============================================================
+   DATA — University / Course / Teacher / Shop pages
+   ============================================================ */
+const uniCoursesData = [
+  {icon:'monitor', type:'Course', title:'CSE — Computer Science &amp; Engineering', rating:4.6, count:'1,204', desc:'Strong programming, AI and software engineering tracks with active industry partnerships.', stats:[{icon:'clock',label:'Duration',value:'4 Years'},{icon:'bar',label:'Avg. Cost',value:'৳5,50,000'},{icon:'trend-up',label:'Job Demand',value:'Very High'},{icon:'award',label:'Difficulty',value:'High'}], photo:true, photoIcon:'monitor'},
+  {icon:'bolt', type:'Course', title:'EEE — Electrical &amp; Electronic Engineering', rating:4.4, count:'820', desc:'Covers power systems, electronics and communication engineering fundamentals.', stats:[{icon:'clock',label:'Duration',value:'4 Years'},{icon:'bar',label:'Avg. Cost',value:'৳5,20,000'},{icon:'trend-up',label:'Job Demand',value:'High'},{icon:'award',label:'Difficulty',value:'Medium'}], photo:true, photoIcon:'bolt'},
+  {icon:'briefcase', type:'Course', title:'BBA — Bachelor of Business Administration', rating:4.3, count:'940', desc:'A generalist business degree with finance, marketing and management majors.', stats:[{icon:'clock',label:'Duration',value:'4 Years'},{icon:'bar',label:'Avg. Cost',value:'৳4,80,000'},{icon:'trend-up',label:'Job Demand',value:'High'},{icon:'award',label:'Difficulty',value:'Medium'}], photo:false},
+  {icon:'book', type:'Course', title:'English — Literature &amp; Linguistics', rating:4.2, count:'310', desc:'Combines literary studies with applied linguistics and communication skills.', stats:[{icon:'clock',label:'Duration',value:'4 Years'},{icon:'bar',label:'Avg. Cost',value:'৳3,90,000'},{icon:'trend-up',label:'Job Demand',value:'Medium'},{icon:'award',label:'Difficulty',value:'Medium'}], photo:false},
+];
+const uniTeachersData = [
+  {title:'Dr. Farhana Islam', meta:'Professor, CSE Department', rating:4.7, count:'612', stats:[{icon:'clock',label:'Experience',value:'15+ Years'},{icon:'book',label:'Courses',value:'6'},{icon:'users',label:'Students',value:'3,000+'}], desc:'Research interests include Machine Learning, Data Mining and Applied AI for healthcare.'},
+  {title:'Dr. Tanvir Ahmed', meta:'Professor, EEE Department', rating:4.5, count:'340', stats:[{icon:'clock',label:'Experience',value:'9+ Years'},{icon:'book',label:'Courses',value:'5'},{icon:'users',label:'Students',value:'1,800+'}], desc:'Focuses on power electronics and renewable energy systems for rural electrification.'},
+];
+const uniTimelineData = [
+  {year:'2001', desc:'Founded as a private university by BRAC.'},
+  {year:'2005', desc:'First convocation held.'},
+  {year:'2014', desc:'Inaugurated new permanent campus in Merul Badda.'},
+  {year:'2020', desc:'Ranked among the top 3 private universities in Bangladesh.'},
+  {year:'2024', desc:'Crossed 18,500 enrolled students.'},
+];
+const uniReviewsData = [
+  {init:'TR', name:'Tanjila Rahman', verified:true, date:'4 days ago', rating:5, helpful:31, text:'Excellent CSE labs and faculty support. The career office also helped me land an internship.'},
+  {init:'MA', name:'Mahin Alam', verified:true, date:'2 weeks ago', rating:4, helpful:14, text:'Solid academics, though tuition fees are on the higher side compared to other private universities.'},
+];
+
+const courseUnisData = [
+  {icon:'grad', type:'University', title:'BRAC University', rating:4.5, count:'2,840', desc:'Private university in Merul Badda offering CSE with strong industry placement support.', stats:[{icon:'bar',label:'Avg. Tuition',value:'৳5,50,000'},{icon:'users',label:'Seats/Year',value:'240'},{icon:'building',label:'Type',value:'Private'}], photo:true, photoIcon:'building'},
+  {icon:'grad', type:'University', title:'BUET', rating:4.8, count:'4,110', desc:"Bangladesh's most selective public engineering university, in Palashi, Dhaka.", stats:[{icon:'bar',label:'Avg. Tuition',value:'৳1,20,000'},{icon:'users',label:'Seats/Year',value:'210'},{icon:'building',label:'Type',value:'Public'}], photo:true, photoIcon:'building'},
+  {icon:'grad', type:'University', title:'AIUB', rating:4.1, count:'1,980', desc:'Large private university in Kuratoli known for its computer science program.', stats:[{icon:'bar',label:'Avg. Tuition',value:'৳4,80,000'},{icon:'users',label:'Seats/Year',value:'320'},{icon:'building',label:'Type',value:'Private'}], photo:false},
+  {icon:'grad', type:'University', title:'North South University', rating:4.4, count:'1,800', desc:'Private university in Bashundhara with one of the largest CSE departments.', stats:[{icon:'bar',label:'Avg. Tuition',value:'৳5,20,000'},{icon:'users',label:'Seats/Year',value:'280'},{icon:'building',label:'Type',value:'Private'}], photo:false},
+];
+const careerStats = [
+  {level:'Entry-Level (0–2y)', salary:35000, max:140000},
+  {level:'Mid-Level (3–5y)', salary:65000, max:140000},
+  {level:'Senior (8y+)', salary:130000, max:140000},
+];
+const courseReviewsData = [
+  {init:'RS', name:'Rakib Sarker', verified:true, date:'5 days ago', rating:5, helpful:42, text:'Tough but rewarding degree — the algorithms and OS courses prepared me well for software interviews.'},
+  {init:'PD', name:'Proma Das', verified:true, date:'3 weeks ago', rating:4, helpful:19, text:'Great job prospects. I wish more universities offered specialised AI tracks within the curriculum.'},
+];
+
+const teacherCoursesData = [
+  {icon:'monitor', type:'Course', title:'CSE — Computer Science &amp; Engineering', rating:4.6, count:'1,204', desc:'The core CSE program, where Dr. Islam teaches Algorithms and Machine Learning.', stats:[{icon:'clock',label:'Duration',value:'4 Years'},{icon:'award',label:'Difficulty',value:'High'},{icon:'users',label:'Enrolled',value:'1,204'}], photo:false},
+  {icon:'grid', type:'Course', title:'Machine Learning Fundamentals', rating:4.8, count:'210', desc:'An elective covering supervised learning, neural networks and model evaluation.', stats:[{icon:'clock',label:'Duration',value:'1 Semester'},{icon:'award',label:'Difficulty',value:'High'},{icon:'users',label:'Enrolled',value:'180'}], photo:false},
+  {icon:'grid', type:'Course', title:'Database Systems', rating:4.5, count:'180', desc:'Relational design, SQL, indexing and transaction management.', stats:[{icon:'clock',label:'Duration',value:'1 Semester'},{icon:'award',label:'Difficulty',value:'Medium'},{icon:'users',label:'Enrolled',value:'210'}], photo:false},
+];
+const teacherReviewsData = [
+  {init:'AH', name:'Afsana Hossain', verified:true, date:'1 week ago', rating:5, helpful:22, text:'One of the most approachable professors in the department — explains complex ML concepts clearly.'},
+  {init:'SI', name:'Sabbir Islam', verified:true, date:'1 month ago', rating:4, helpful:11, text:'Tough grading but fair, and always available during office hours.'},
+];
+
+const shopOffersData = [
+  {title:'10% off Dairy Products', sub:'Valid till end of month, in-store only'},
+  {title:'Buy 2 Get 1 Free — Snacks', sub:'On select biscuit and chips brands'},
+  {title:'৳50 off bills above ৳2,000', sub:'Applicable with Shwapno loyalty card'},
+];
+const shopReviewsData = [
+  {init:'FA', name:'Fariha Akter', verified:true, date:'3 days ago', rating:4, helpful:15, text:'Clean store, good variety, but checkout lines get long on weekends.'},
+  {init:'MR', name:'Mehedi Rahman', verified:true, date:'2 weeks ago', rating:4, helpful:8, text:'Prices are a bit higher than local markets but the quality and packaging are reliable.'},
+];
+
+/* ============================================================
+   RENDER — homepage
+   ============================================================ */
+function renderCategories(){
+  document.getElementById('catGrid').innerHTML = categories.map(c => `
+    <div class="cat-card">
+      <div class="ic-wrap">${ic(c.icon)}</div>
+      <div><h4>${c.label}</h4><div class="count">${c.count}</div></div>
+    </div>`).join('');
+}
+
+function renderPulse(){
+  const trendingHTML = pulse.trending.map((t,i)=>`
+    <div class="pulse-row">
+      <span class="pulse-rank">${i+1}</span>
+      <div class="pulse-body"><div class="pulse-title">${t.term}</div><div class="pulse-meta">${t.meta}</div></div>
+      <span class="pulse-trend ${t.up?'up':'down'}">${ic(t.up?'trend-up':'trend-down')}${t.pct}</span>
+    </div>`).join('');
+  const updatedHTML = pulse.updated.map(u=>`
+    <div class="pulse-row">
+      <div class="mini-avatar">${ic('check')}</div>
+      <div class="pulse-body"><div class="pulse-title">${u.name}</div><div class="pulse-meta">${u.meta}</div></div>
+    </div>`).join('');
+  const reviewsHTML = pulse.reviews.map(r=>`
+    <div class="pulse-row">
+      <div class="mini-avatar">${r.init}</div>
+      <div class="pulse-body"><div class="pulse-title">${r.name}</div><div class="pulse-meta">${stars(r.rating,11)}</div></div>
+    </div>`).join('');
+  const pricesHTML = pulse.prices.map(p=>`
+    <div class="pulse-row">
+      <div class="pulse-body"><div class="pulse-title">${p.name}</div><div class="pulse-meta"><s>${p.old}</s> → <strong style="color:var(--ink)">${p.now}</strong></div></div>
+      <span class="pulse-trend ${p.down?'down':'up'}">${ic(p.down?'trend-down':'trend-up')}</span>
+    </div>`).join('');
+
+  document.getElementById('pulseGrid').innerHTML = `
+    <div class="pulse-card"><h3>${ic('trend-up')} Trending Searches</h3>${trendingHTML}</div>
+    <div class="pulse-card"><h3>${ic('clock')} Recently Updated</h3>${updatedHTML}</div>
+    <div class="pulse-card"><h3>${ic('star')} Popular Reviews</h3>${reviewsHTML}</div>
+    <div class="pulse-card"><h3>${ic('bar')} Latest Price Changes</h3>${pricesHTML}</div>
+  `;
+}
+
+function entityCardHTML(e){
+  return `
+  <div class="entity-card">
+    <div class="ph">${ic(e.icon)}<span class="ec-type">${e.type}</span></div>
+    <div class="ec-body">
+      <div class="ec-title-row"><span class="ec-title">${e.title}</span>${ic('check','verified-mark')}</div>
+      <div class="ec-meta">${ic('pin')} ${e.meta}</div>
+      <div class="rating-line">${stars(e.rating)}<span class="rating-num">${e.rating}</span><span class="rating-count">(${e.count})</span></div>
+      <div class="tag-row">${e.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    </div>
+  </div>`;
+}
+function renderFeatured(){
+  document.getElementById('featuredRow').innerHTML = featured.map(entityCardHTML).join('');
+}
+
+/* ============================================================
+   RENDER — search results
+   ============================================================ */
+function renderFilterTabs(){
+  document.getElementById('filterTabs').innerHTML = filterTabs.map(f=>`<div class="ftab ${f.active?'active':''}">${f.label} <span class="mono" style="color:var(--ink-faint)">(${f.count})</span></div>`).join('');
+}
+function renderSearchSections(){
+  document.getElementById('searchSections').innerHTML = searchSections.map(s=>{
+    const rowsHtml = s.type==='teacher' ? s.items.map(teacherRow).join('') : s.items.map(richRow).join('');
+    return `<div class="result-section">
+      <div class="result-section-head">
+        <h3>${ic(s.icon)} ${s.title} <span class="cnt-badge">${s.total}</span></h3>
+        <a class="view-all">View all (${s.total}) ${ic('arrow-right')}</a>
+      </div>
+      ${rowsHtml}
+    </div>`;
+  }).join('');
+}
+
+/* ============================================================
+   RENDER — category (restaurants)
+   ============================================================ */
+function renderCatChips(){
+  document.getElementById('catChips').innerHTML = catChips.map(c=>`<button class="chip-filter ${c.active?'active':''}">${c.label}</button>`).join('');
+}
+function renderRestaurants(){
+  document.getElementById('restList').innerHTML = restaurants.map(r=>`
+    <div class="rest-card">
+      <div class="rest-thumb">${ic('utensils')}</div>
+      <div class="rest-info">
+        <div class="rest-top">
+          <div>
+            <h4>${r.name}${ic('check','verified-mark')}</h4>
+            <div class="ec-meta" style="margin-bottom:0">${ic('pin')} ${r.area}</div>
+          </div>
+          <span class="status-dot"><span class="dot"></span>${r.open?'Open now':'Closed'}</span>
+        </div>
+        <p class="rest-desc">${r.desc}</p>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div class="rating-line" style="margin:0">${stars(r.rating,12)}<span class="rating-num">${r.rating}</span><span class="rating-count">(${r.count})</span></div>
+          <span class="price-badge">${r.price}</span>
+          <div class="tag-row">${r.cuisine.map(c=>`<span class="tag">${c}</span>`).join('')}</div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+/* ============================================================
+   RENDER — products listing
+   ============================================================ */
+function renderProducts(){
+  document.getElementById('productGrid').innerHTML = productCategories.map(productCardHTML).join('');
+}
+function renderPagination(id, n){
+  let html = `<button class="page-btn">${ic('chevron-left')}</button>`;
+  for(let i=1;i<=n;i++){ html += `<button class="page-btn ${i===1?'active':''}">${i}</button>`; }
+  html += `<button class="page-btn">${ic('chevron-right')}</button>`;
+  document.getElementById(id).innerHTML = html;
+}
+
+/* ============================================================
+   RENDER — product detail (Potato)
+   ============================================================ */
+function renderGallery(){
+  document.getElementById('galleryThumbs').innerHTML = galleryItems.map((g,i)=>`<div class="gthumb ${i===0?'active':''}" data-i="${i}">${ic(g)}</div>`).join('');
+  document.querySelectorAll('#galleryThumbs .gthumb').forEach(t=>t.addEventListener('click', ()=>{
+    document.querySelectorAll('#galleryThumbs .gthumb').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+  }));
+}
+function renderRegionTable(){
+  document.getElementById('regionTable').innerHTML = regionPrices.map(r=>`
+    <tr><td>${r.region}</td><td class="mono" style="font-weight:700">৳${r.price}/kg</td>
+    <td><div class="bar-mini"><div class="fill" style="width:${(r.price/r.max*100).toFixed(0)}%"></div></div></td></tr>`).join('');
+}
+function renderShops(){
+  document.getElementById('shopList').innerHTML = shopRowsHTML(shopPrices);
+}
+function renderRelated(){
+  document.getElementById('relatedGrid').innerHTML = relatedProducts.map(r=>`
+    <div class="mini-ecard"><div class="ph">${ic(r.icon)}</div><div class="nm">${r.name}</div></div>`).join('');
+}
+function renderDelta(){
+  document.getElementById('deltaSection').innerHTML =
+    deltaFlow('Available at', ['Shwapno','Agora','Meena Bazar','2,140 Local Markets']) +
+    deltaFlow('Often bought with', ['Tomato','Onion','Garlic','Green Chili']) +
+    deltaFlow('Used in recipes', ['Aloo Bhorta','Beef Tehari','Singara']);
+}
+function renderRatingBars(){
+  document.getElementById('rsBars').innerHTML = reviewSummaryBars();
+}
+function renderReviews(){
+  document.getElementById('reviewList').innerHTML = reviewListHTML(reviews);
+}
+function drawPriceChart(){
+  const data = [39,41,38,36,37,35];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun'];
+  const w=600,h=160,pad=20;
+  const max=44,min=32;
+  const pts = data.map((v,i)=>{
+    const x = pad + i*((w-2*pad)/(data.length-1));
+    const y = h-pad - ((v-min)/(max-min))*(h-2*pad);
+    return [x,y];
+  });
+  const path = pts.map((p,i)=> (i===0?'M':'L')+p[0]+','+p[1]).join(' ');
+  const areaPath = path + ` L${pts[pts.length-1][0]},${h-pad} L${pts[0][0]},${h-pad} Z`;
+  let svg = `
+    <defs><linearGradient id="areaFill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0F6E72" stop-opacity="0.16"/><stop offset="100%" stop-color="#0F6E72" stop-opacity="0"/>
+    </linearGradient></defs>
+    <path d="${areaPath}" fill="url(#areaFill)"/>
+    <path d="${path}" fill="none" stroke="#0F6E72" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/>`;
+  pts.forEach((p,i)=>{ svg += `<circle cx="${p[0]}" cy="${p[1]}" r="${i===pts.length-1?5:3.2}" fill="#fff" stroke="#0F6E72" stroke-width="2"/>`; });
+  months.forEach((m,i)=>{ svg += `<text x="${pts[i][0]}" y="${h-2}" font-size="11" fill="#8993A6" text-anchor="middle" font-family="IBM Plex Mono">${m}</text>`; });
+  document.getElementById('priceChart').innerHTML = svg;
+
+  const w2=280,h2=60,pad2=4;
+  const pts2 = data.map((v,i)=>{
+    const x = pad2 + i*((w2-2*pad2)/(data.length-1));
+    const y = h2-pad2 - ((v-min)/(max-min))*(h2-2*pad2);
+    return [x,y];
+  });
+  const path2 = pts2.map((p,i)=> (i===0?'M':'L')+p[0]+','+p[1]).join(' ');
+  document.getElementById('sparkline').innerHTML = `<path d="${path2}" fill="none" stroke="#0F6E72" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${pts2[pts2.length-1][0]}" cy="${pts2[pts2.length-1][1]}" r="3" fill="#0F6E72"/>`;
+}
+
+/* ============================================================
+   RENDER — University page
+   ============================================================ */
+function renderUniversity(){
+  document.getElementById('uniGallery').innerHTML = galleryItems.map(g=>`<div class="gthumb">${ic(g)}</div>`).join('');
+  document.getElementById('uniCourses').innerHTML = uniCoursesData.map(richRow).join('');
+  document.getElementById('uniTeachers').innerHTML = uniTeachersData.map(teacherRow).join('');
+  document.getElementById('uniTimeline').innerHTML = timelineHTML(uniTimelineData);
+  document.getElementById('uniRsBars').innerHTML = reviewSummaryBars();
+  document.getElementById('uniReviewList').innerHTML = reviewListHTML(uniReviewsData);
+  document.getElementById('uniDelta').innerHTML = deltaFlow('Similar to', ['AIUB','North South University','Independent University Bangladesh']);
+  document.getElementById('uniStars').innerHTML = stars(4.5,15);
+  document.getElementById('uniRsStars').innerHTML = stars(4.5,16);
+  document.getElementById('uniSideStars').innerHTML = stars(4.5,15);
+}
+
+/* ============================================================
+   RENDER — Course page
+   ============================================================ */
+function renderCourse(){
+  document.getElementById('courseUniversities').innerHTML = courseUnisData.map(richRow).join('');
+  const maxSalary = Math.max(...careerStats.map(c=>c.salary));
+  document.getElementById('careerTable').innerHTML = careerStats.map(c=>`
+    <tr><td>${c.level}</td><td class="mono" style="font-weight:700">৳${c.salary.toLocaleString('en-IN')}/mo</td>
+    <td><div class="bar-mini"><div class="fill" style="width:${(c.salary/c.max*100).toFixed(0)}%"></div></div></td></tr>`).join('');
+  document.getElementById('courseRsBars').innerHTML = reviewSummaryBars();
+  document.getElementById('courseReviewList').innerHTML = reviewListHTML(courseReviewsData);
+  document.getElementById('courseDelta').innerHTML = deltaFlow('Related to', ['EEE','Software Engineering','Data Science','Information Technology']);
+  document.getElementById('courseStars').innerHTML = stars(4.6,15);
+  document.getElementById('courseRsStars').innerHTML = stars(4.6,16);
+  document.getElementById('courseSideStars').innerHTML = stars(4.6,15);
+}
+
+/* ============================================================
+   RENDER — Teacher page
+   ============================================================ */
+function renderTeacher(){
+  document.getElementById('teacherCourses').innerHTML = teacherCoursesData.map(richRow).join('');
+  document.getElementById('teacherRsBars').innerHTML = reviewSummaryBars();
+  document.getElementById('teacherReviewList').innerHTML = reviewListHTML(teacherReviewsData);
+  document.getElementById('teacherDelta').innerHTML = deltaFlow('Related teachers', ['Prof. Imran Kabir','Dr. Nusrat Jahan','Dr. Tanvir Ahmed']);
+  document.getElementById('teacherStars').innerHTML = stars(4.7,15);
+  document.getElementById('teacherRsStars').innerHTML = stars(4.7,16);
+  document.getElementById('teacherSideStars').innerHTML = stars(4.7,15);
+}
+
+/* ============================================================
+   RENDER — Shop page
+   ============================================================ */
+function renderShopPage(){
+  document.getElementById('shopOffers').innerHTML = promoHTML(shopOffersData);
+  const popular = [productCategories[0], productCategories[2], productCategories[6], productCategories[9]];
+  document.getElementById('shopProductGrid').innerHTML = popular.map(productCardHTML).join('');
+  document.getElementById('shopCompareList').innerHTML = shopRowsHTML(shopPrices);
+  document.getElementById('shopRsBars').innerHTML = reviewSummaryBars();
+  document.getElementById('shopReviewList').innerHTML = reviewListHTML(shopReviewsData);
+  document.getElementById('shopDelta').innerHTML = deltaFlow('Similar to', ['Agora','Meena Bazar','Daily Shopping']);
+  document.getElementById('shopStars').innerHTML = stars(4.2,15);
+  document.getElementById('shopRsStars').innerHTML = stars(4.2,16);
+}
+
+/* ============================================================
+   NAV — hamburger + page switching
+   ============================================================ */
+document.getElementById('hamburgerBtn').addEventListener('click', ()=>{
+  document.getElementById('mobileMenu').classList.toggle('open');
+});
+
+const pages = ['home','search','category','products','product','university','course','teacher','shop'];
+function showPage(name){
+  pages.forEach(p=>document.getElementById('page-'+p).classList.toggle('hidden', p!==name));
+  document.querySelectorAll('.proto-pill').forEach(b=>b.classList.toggle('active', b.dataset.page===name));
+  document.getElementById('mobileMenu').classList.remove('open');
+  window.scrollTo({top:0, behavior:'instant'});
+}
+document.querySelectorAll('.proto-pill').forEach(b=>b.addEventListener('click', ()=>showPage(b.dataset.page)));
+
+/* ============================================================
+   INIT
+   ============================================================ */
+renderCategories();
+renderPulse();
+renderFeatured();
+renderFilterTabs();
+renderSearchSections();
+renderCatChips();
+renderRestaurants();
+renderPagination('catPagination', 6);
+renderProducts();
+renderPagination('prodPagination', 8);
+renderGallery();
+renderRegionTable();
+renderShops();
+renderRelated();
+renderDelta();
+renderRatingBars();
+renderReviews();
+drawPriceChart();
+document.getElementById('pdStars').innerHTML = stars(4.3,14);
+document.getElementById('rsStars').innerHTML = stars(4.3,15);
+document.getElementById('sideStars').innerHTML = stars(4.3,15);
+renderUniversity();
+renderCourse();
+renderTeacher();
+renderShopPage();
+</script>
+</body>
+</html>

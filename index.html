@@ -22,7 +22,56 @@ body{
   body{align-items:center;padding:28px 20px;}
 }
 
+@media(min-width:720px){
+  html{scrollbar-gutter:stable;}
+}
+.shell{width:100%;max-width:480px;position:relative;}
 .wrap{width:100%;max-width:480px;min-width:0;overflow:hidden;}
+
+/* ── side nav ── */
+.nav{
+  position:fixed;left:calc(50% - 338px);top:50%;
+  transform:translateY(-50%);
+  width:74px;
+  display:flex;flex-direction:column;align-items:flex-start;gap:14px;
+  view-transition-name:site-nav;
+}
+.nav a{
+  font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+  color:#8a8178;text-decoration:none;font-weight:600;
+  padding:2px 0;position:relative;
+  transition:color .13s;
+}
+.nav a:hover{color:#0e0c0a;}
+.nav a.active{color:#0e0c0a;}
+.nav a.active::before{
+  content:'';position:absolute;left:-10px;top:50%;
+  width:4px;height:4px;border-radius:50%;
+  background:#0e0c0a;transform:translateY(-50%);
+}
+
+/* ── page transition ── */
+@media (prefers-reduced-motion:no-preference){
+  @view-transition{navigation:auto;}
+  ::view-transition-old(root){animation:none;}
+  ::view-transition-new(root){animation:vt-slide .3s cubic-bezier(.22,1,.36,1) both;}
+}
+@keyframes vt-slide{
+  from{transform:translateY(100%);}
+  to{transform:translateY(0);}
+}
+
+@media(max-width:719px){
+  .nav{
+    position:absolute;left:auto;top:0;right:0;
+    transform:none;
+    width:auto;flex-direction:row;align-items:center;gap:14px;
+    padding-top:1px;
+  }
+  .nav a{padding:2px 0;}
+  .nav a.active::before{display:none;}
+  .nav a.active{border-bottom:1px solid currentColor;}
+}
 
 /* ── head ── */
 .head{margin-bottom:28px;}
@@ -178,144 +227,153 @@ h1{
 </head>
 <body>
 <div id="toast"></div>
-<div class="wrap">
+<div class="shell">
 
-  <div class="head">
-    <div class="name">ShrekBytes</div>
-    <h1>Support my work.</h1>
-    <p class="desc">Open source work, free for everyone.</p>
-  </div>
+  <nav class="nav" aria-label="Pages">
+    <a href="index.html" class="active" aria-current="page">Support</a>
+    <a href="projects.html">Projects</a>
+  </nav>
 
-  <div class="crypto-card">
-    <div class="tbl-head">
-      <span class="th th-coin">Crypto</span>
-      <span class="th th-net">Network</span>
-      <span class="th th-addr">Address</span>
+  <div class="wrap">
+
+    <div class="head">
+      <div class="name">ShrekBytes</div>
+      <h1>Support my work.</h1>
+      <p class="desc">Open source work, free for everyone.</p>
     </div>
-    <div class="groups">
 
-      <!-- SOL -->
-      <div class="coin-group">
-        <div class="nrow" onclick="cp(this,'3yKDAd3XVM2zz2FHRQWSPz12Z8S4LEVbSbdQ5JRR4SUG','SOL address copied')">
-          <span class="coin-cell"><span class="nicon"><svg width="18" height="18" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#000"/><defs><linearGradient id="sg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#00ffa3"/><stop offset="1" stop-color="#dc1fff"/></linearGradient></defs><path fill="url(#sg)" d="M9.9 20.3c.2-.2.4-.3.7-.3h12.1c.4 0 .6.5.3.8l-2.4 2.4c-.2.2-.4.3-.7.3H7.8c-.4 0-.6-.5-.3-.8zm0-9c.2-.2.5-.3.7-.3h12.1c.4 0 .6.5.3.8l-2.4 2.4c-.2.2-.4.3-.7.3H7.8c-.4 0-.6-.5-.3-.8zm12.2 4.5c-.2-.2-.4-.3-.7-.3H9.3c-.4 0-.6.5-.3.8l2.4 2.4c.2.2.4.3.7.3h12.1c.4 0 .6-.5.3-.8z"/></svg></span><span class="cname">SOL</span></span>
-          <span class="npill">Solana</span>
-          <span class="naddr">3yKDAd3XVM2zz2FHRQWSPz12Z8S4LEVbSbdQ5JRR4SUG</span>
-          <div class="ncopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
-        </div>
+    <div class="crypto-card">
+      <div class="tbl-head">
+        <span class="th th-coin">Crypto</span>
+        <span class="th th-net">Network</span>
+        <span class="th th-addr">Address</span>
       </div>
+      <div class="groups">
 
-      <!-- USDT -->
-      <div class="coin-group">
-        <div class="nrow" onclick="cp(this,'THj3S3FjPsKZitnV3UDUbUtikmexgqFFG3','USDT TRC20 address copied')">
-          <span class="coin-cell"><span class="nicon"><svg width="18" height="18" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#26a17b"/><path fill="#fff" d="M17.9 17.4c-.1 0-.7.1-1.9.1-1 0-1.7 0-1.9-.1-3.4-.1-5.9-.7-5.9-1.4s2.5-1.3 5.9-1.4v2.4c.2 0 .9.1 1.9.1 1.2 0 1.8-.1 1.9-.1v-2.4c3.4.1 5.9.7 5.9 1.4s-2.5 1.3-5.9 1.4zm0-3v-2.1H23V8.8H9v3.5h4.8v2.1c-4 .2-7 1-7 1.9s3 1.7 7 1.9V25h4.2v-6.8c4-.2 7-1 7-1.9s-3-1.7-7-1.9z"/></svg></span><span class="cname">USDT</span></span>
-          <span class="npill">TRON TRC20</span>
-          <span class="naddr">THj3S3FjPsKZitnV3UDUbUtikmexgqFFG3</span>
-          <div class="ncopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+        <!-- SOL -->
+        <div class="coin-group">
+          <div class="nrow" onclick="cp(this,'3yKDAd3XVM2zz2FHRQWSPz12Z8S4LEVbSbdQ5JRR4SUG','SOL address copied')">
+            <span class="coin-cell"><span class="nicon"><svg width="18" height="18" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#000"/><defs><linearGradient id="sg" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#00ffa3"/><stop offset="1" stop-color="#dc1fff"/></linearGradient></defs><path fill="url(#sg)" d="M9.9 20.3c.2-.2.4-.3.7-.3h12.1c.4 0 .6.5.3.8l-2.4 2.4c-.2.2-.4.3-.7.3H7.8c-.4 0-.6-.5-.3-.8zm0-9c.2-.2.5-.3.7-.3h12.1c.4 0 .6.5.3.8l-2.4 2.4c-.2.2-.4.3-.7.3H7.8c-.4 0-.6-.5-.3-.8zm12.2 4.5c-.2-.2-.4-.3-.7-.3H9.3c-.4 0-.6.5-.3.8l2.4 2.4c.2.2.4.3.7.3h12.1c.4 0 .6-.5.3-.8z"/></svg></span><span class="cname">SOL</span></span>
+            <span class="npill">Solana</span>
+            <span class="naddr">3yKDAd3XVM2zz2FHRQWSPz12Z8S4LEVbSbdQ5JRR4SUG</span>
+            <div class="ncopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+          </div>
         </div>
-        <div class="nrow" onclick="cp(this,'0xC66a5640C38f25EaaEAA18Aea0dCFD2a6798DF73','USDT BSC address copied')">
-          <span class="coin-cell"></span>
-          <span class="npill">BSC BEP20</span>
-          <span class="naddr">0xC66a5640C38f25EaaEAA18Aea0dCFD2a6798DF73</span>
-          <div class="ncopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+
+        <!-- USDT -->
+        <div class="coin-group">
+          <div class="nrow" onclick="cp(this,'THj3S3FjPsKZitnV3UDUbUtikmexgqFFG3','USDT TRC20 address copied')">
+            <span class="coin-cell"><span class="nicon"><svg width="18" height="18" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#26a17b"/><path fill="#fff" d="M17.9 17.4c-.1 0-.7.1-1.9.1-1 0-1.7 0-1.9-.1-3.4-.1-5.9-.7-5.9-1.4s2.5-1.3 5.9-1.4v2.4c.2 0 .9.1 1.9.1 1.2 0 1.8-.1 1.9-.1v-2.4c3.4.1 5.9.7 5.9 1.4s-2.5 1.3-5.9 1.4zm0-3v-2.1H23V8.8H9v3.5h4.8v2.1c-4 .2-7 1-7 1.9s3 1.7 7 1.9V25h4.2v-6.8c4-.2 7-1 7-1.9s-3-1.7-7-1.9z"/></svg></span><span class="cname">USDT</span></span>
+            <span class="npill">TRON TRC20</span>
+            <span class="naddr">THj3S3FjPsKZitnV3UDUbUtikmexgqFFG3</span>
+            <div class="ncopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+          </div>
+          <div class="nrow" onclick="cp(this,'0xC66a5640C38f25EaaEAA18Aea0dCFD2a6798DF73','USDT BSC address copied')">
+            <span class="coin-cell"></span>
+            <span class="npill">BSC BEP20</span>
+            <span class="naddr">0xC66a5640C38f25EaaEAA18Aea0dCFD2a6798DF73</span>
+            <div class="ncopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+          </div>
+          <div class="nrow" onclick="cp(this,'3yKDAd3XVM2zz2FHRQWSPz12Z8S4LEVbSbdQ5JRR4SUG','USDT SOL address copied')">
+            <span class="coin-cell"></span>
+            <span class="npill">Solana SPL</span>
+            <span class="naddr">3yKDAd3XVM2zz2FHRQWSPz12Z8S4LEVbSbdQ5JRR4SUG</span>
+            <div class="ncopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+          </div>
         </div>
-        <div class="nrow" onclick="cp(this,'3yKDAd3XVM2zz2FHRQWSPz12Z8S4LEVbSbdQ5JRR4SUG','USDT SOL address copied')">
-          <span class="coin-cell"></span>
-          <span class="npill">Solana SPL</span>
-          <span class="naddr">3yKDAd3XVM2zz2FHRQWSPz12Z8S4LEVbSbdQ5JRR4SUG</span>
-          <div class="ncopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+
+        <!-- BNB -->
+        <div class="coin-group">
+          <div class="nrow" onclick="cp(this,'0xC66a5640C38f25EaaEAA18Aea0dCFD2a6798DF73','BNB address copied')">
+            <span class="coin-cell"><span class="nicon"><svg width="18" height="18" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#f3ba2f"/><path fill="#fff" d="M12.1 14.5L16 10.6l3.9 3.9 2.3-2.3L16 6l-6.2 6.2zM6 16l2.3-2.3L10.6 16l-2.3 2.3zm6.1 1.5L16 21.4l3.9-3.9 2.3 2.3L16 26l-6.2-6.2zm9.3-1.5l2.3-2.3L26 16l-2.3 2.3zM18.3 16L16 13.7 14.3 15.4 14.1 15.6l-.3.4.3.4.2.2L16 18.3 18.3 16z"/></svg></span><span class="cname">BNB</span></span>
+            <span class="npill">BSC BEP20</span>
+            <span class="naddr">0xC66a5640C38f25EaaEAA18Aea0dCFD2a6798DF73</span>
+            <div class="ncopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+          </div>
         </div>
+
+        <!-- ETH -->
+        <div class="coin-group">
+          <div class="nrow" onclick="cp(this,'0xC66a5640C38f25EaaEAA18Aea0dCFD2a6798DF73','ETH address copied')">
+            <span class="coin-cell"><span class="nicon"><svg width="18" height="18" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#627eea"/><path fill="#fff" fill-opacity=".6" d="M16.5 4v8.9l7.5 3.4z"/><path fill="#fff" d="M16.5 4L9 16.3l7.5-3.4z"/><path fill="#fff" fill-opacity=".6" d="M16.5 21.97V28L24 17.7z"/><path fill="#fff" d="M16.5 28v-6.04L9 17.7z"/><path fill="#fff" fill-opacity=".2" d="M16.5 20.57l7.5-4.27-7.5-3.4z"/><path fill="#fff" fill-opacity=".6" d="M9 16.3l7.5 4.27v-7.67z"/></svg></span><span class="cname">ETH</span></span>
+            <span class="npill">Ethereum</span>
+            <span class="naddr">0xC66a5640C38f25EaaEAA18Aea0dCFD2a6798DF73</span>
+            <div class="ncopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+          </div>
+          <div class="nrow" onclick="cp(this,'0xC66a5640C38f25EaaEAA18Aea0dCFD2a6798DF73','ETH BSC address copied')">
+            <span class="coin-cell"></span>
+            <span class="npill">BSC BEP20</span>
+            <span class="naddr">0xC66a5640C38f25EaaEAA18Aea0dCFD2a6798DF73</span>
+            <div class="ncopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+          </div>
+        </div>
+
+        <!-- Bitcoin -->
+        <div class="coin-group">
+          <div class="nrow" onclick="cp(this,'currently unavailable','BTC address copied')">
+            <span class="coin-cell"><span class="nicon"><svg width="18" height="18" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#f7931a"/><path fill="#fff" d="M21.7 14.2c.3-2-1.2-3-3.3-3.7l.7-2.7-1.7-.4-.7 2.6-1.3-.3.7-2.7-1.6-.4-.7 2.7-1-.3-2.3-.6-.4 1.8s1.2.3 1.2.3c.7.2.8.6.8 1l-.8 3v.1l-1.1 4.3c-.1.2-.3.5-.8.4l-1.2-.3-.8 1.9 2.1.5 1.2.3-.7 2.7 1.6.4.7-2.7 1.3.3-.7 2.7 1.7.4.7-2.7c2.8.5 4.9.3 5.8-2.2.7-2-.1-3.2-1.5-4 1-.2 1.8-.9 2-2.4zm-3.6 5.2c-.5 2-3.9.9-5 .6l.9-3.6c1.1.3 4.6.9 4.1 3zm.5-5.2c-.5 1.9-3.3.9-4.2.7l.8-3.3c.9.2 3.9.7 3.4 2.6z"/></svg></span><span class="cname">BTC</span></span>
+            <span class="npill">Bitcoin</span>
+            <span class="naddr">currently unavailable</span>
+            <div class="ncopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+          </div>
+        </div>
+
       </div>
-
-      <!-- BNB -->
-      <div class="coin-group">
-        <div class="nrow" onclick="cp(this,'0xC66a5640C38f25EaaEAA18Aea0dCFD2a6798DF73','BNB address copied')">
-          <span class="coin-cell"><span class="nicon"><svg width="18" height="18" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#f3ba2f"/><path fill="#fff" d="M12.1 14.5L16 10.6l3.9 3.9 2.3-2.3L16 6l-6.2 6.2zM6 16l2.3-2.3L10.6 16l-2.3 2.3zm6.1 1.5L16 21.4l3.9-3.9 2.3 2.3L16 26l-6.2-6.2zm9.3-1.5l2.3-2.3L26 16l-2.3 2.3zM18.3 16L16 13.7 14.3 15.4 14.1 15.6l-.3.4.3.4.2.2L16 18.3 18.3 16z"/></svg></span><span class="cname">BNB</span></span>
-          <span class="npill">BSC BEP20</span>
-          <span class="naddr">0xC66a5640C38f25EaaEAA18Aea0dCFD2a6798DF73</span>
-          <div class="ncopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
-        </div>
-      </div>
-
-      <!-- ETH -->
-      <div class="coin-group">
-        <div class="nrow" onclick="cp(this,'0xC66a5640C38f25EaaEAA18Aea0dCFD2a6798DF73','ETH address copied')">
-          <span class="coin-cell"><span class="nicon"><svg width="18" height="18" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#627eea"/><path fill="#fff" fill-opacity=".6" d="M16.5 4v8.9l7.5 3.4z"/><path fill="#fff" d="M16.5 4L9 16.3l7.5-3.4z"/><path fill="#fff" fill-opacity=".6" d="M16.5 21.97V28L24 17.7z"/><path fill="#fff" d="M16.5 28v-6.04L9 17.7z"/><path fill="#fff" fill-opacity=".2" d="M16.5 20.57l7.5-4.27-7.5-3.4z"/><path fill="#fff" fill-opacity=".6" d="M9 16.3l7.5 4.27v-7.67z"/></svg></span><span class="cname">ETH</span></span>
-          <span class="npill">Ethereum</span>
-          <span class="naddr">0xC66a5640C38f25EaaEAA18Aea0dCFD2a6798DF73</span>
-          <div class="ncopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
-        </div>
-        <div class="nrow" onclick="cp(this,'0xC66a5640C38f25EaaEAA18Aea0dCFD2a6798DF73','ETH BSC address copied')">
-          <span class="coin-cell"></span>
-          <span class="npill">BSC BEP20</span>
-          <span class="naddr">0xC66a5640C38f25EaaEAA18Aea0dCFD2a6798DF73</span>
-          <div class="ncopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
-        </div>
-      </div>
-
-      <!-- Bitcoin -->
-      <div class="coin-group">
-        <div class="nrow" onclick="cp(this,'currently unavailable','BTC address copied')">
-          <span class="coin-cell"><span class="nicon"><svg width="18" height="18" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#f7931a"/><path fill="#fff" d="M21.7 14.2c.3-2-1.2-3-3.3-3.7l.7-2.7-1.7-.4-.7 2.6-1.3-.3.7-2.7-1.6-.4-.7 2.7-1-.3-2.3-.6-.4 1.8s1.2.3 1.2.3c.7.2.8.6.8 1l-.8 3v.1l-1.1 4.3c-.1.2-.3.5-.8.4l-1.2-.3-.8 1.9 2.1.5 1.2.3-.7 2.7 1.6.4.7-2.7 1.3.3-.7 2.7 1.7.4.7-2.7c2.8.5 4.9.3 5.8-2.2.7-2-.1-3.2-1.5-4 1-.2 1.8-.9 2-2.4zm-3.6 5.2c-.5 2-3.9.9-5 .6l.9-3.6c1.1.3 4.6.9 4.1 3zm.5-5.2c-.5 1.9-3.3.9-4.2.7l.8-3.3c.9.2 3.9.7 3.4 2.6z"/></svg></span><span class="cname">BTC</span></span>
-          <span class="npill">Bitcoin</span>
-          <span class="naddr">currently unavailable</span>
-          <div class="ncopy"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
-        </div>
-      </div>
-
     </div>
-  </div>
 
-  <div class="div"><span>or</span></div>
+    <div class="div"><span>or</span></div>
 
-  <div class="slabel">US ACH bank transfer</div>
+    <div class="slabel">US ACH bank transfer</div>
 
-  <div class="ach-toggle" id="achToggle" onclick="toggleAch()">
-    <div class="ach-bank-icon">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 2 7 22 7"/></svg>
+    <div class="ach-toggle" id="achToggle" onclick="toggleAch()">
+      <div class="ach-bank-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 2 7 22 7"/></svg>
+      </div>
+      <div class="ach-info">
+        <div class="ach-title">JP Morgan Chase · Md Walid Ahmed</div>
+        <div class="ach-hint" id="achHint">Tap to show account details</div>
+      </div>
+      <svg class="ach-chevron" id="achChev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
     </div>
-    <div class="ach-info">
-      <div class="ach-title">JP Morgan Chase · Md Walid Ahmed</div>
-      <div class="ach-hint" id="achHint">Tap to show account details</div>
+
+    <div class="ach-panel" id="achPanel">
+      <div class="ach-body">
+        <div class="afield" onclick="cpf(this,'30000001246451','Account number copied')">
+          <span class="akey">Account no.</span>
+          <span class="aval">30000001246451</span>
+          <span class="acopy"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span>
+        </div>
+        <div class="afield" onclick="cpf(this,'Md Walid Ahmed','Account name copied')">
+          <span class="akey">Account name</span>
+          <span class="aval">Md Walid Ahmed</span>
+          <span class="acopy"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span>
+        </div>
+        <div class="afield" onclick="cpf(this,'028000024','Routing number copied')">
+          <span class="akey">Routing no.</span>
+          <span class="aval">028000024</span>
+          <span class="acopy"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span>
+        </div>
+        <div class="afield" onclick="cpf(this,'Checking','Account type copied')">
+          <span class="akey">Type</span>
+          <span class="aval">Checking</span>
+          <span class="acopy"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span>
+        </div>
+        <div class="anote">270 Park Ave, New York, NY 10017 · Checking · USD only</div>
+      </div>
     </div>
-    <svg class="ach-chevron" id="achChev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-  </div>
 
-  <div class="ach-panel" id="achPanel">
-    <div class="ach-body">
-      <div class="afield" onclick="cpf(this,'30000001246451','Account number copied')">
-        <span class="akey">Account no.</span>
-        <span class="aval">30000001246451</span>
-        <span class="acopy"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span>
-      </div>
-      <div class="afield" onclick="cpf(this,'Md Walid Ahmed','Account name copied')">
-        <span class="akey">Account name</span>
-        <span class="aval">Md Walid Ahmed</span>
-        <span class="acopy"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span>
-      </div>
-      <div class="afield" onclick="cpf(this,'028000024','Routing number copied')">
-        <span class="akey">Routing no.</span>
-        <span class="aval">028000024</span>
-        <span class="acopy"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span>
-      </div>
-      <div class="afield" onclick="cpf(this,'Checking','Account type copied')">
-        <span class="akey">Type</span>
-        <span class="aval">Checking</span>
-        <span class="acopy"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></span>
-      </div>
-      <div class="anote">270 Park Ave, New York, NY 10017 · Checking · USD only</div>
+    <p class="altcontact">
+      <span>Want to support another way or just have a chat?</span>
+      <a href="mailto:walid@shrekbytes.dev">walid@shrekbytes.dev</a>
+    </p>
+
+    <div class="foot">
+      <a href="https://github.com/ShrekBytes" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.78 1.2 1.78 1.2 1.03 1.77 2.71 1.26 3.37.97.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.3-.52-1.48.11-3.08 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.6.23 2.78.11 3.08.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+        github.com/ShrekBytes
+      </a>
     </div>
-  </div>
 
-  <p class="altcontact">
-    <span>Want to support another way or just have a chat?</span>
-    <a href="mailto:shrekbytes@duck.com">shrekbytes@duck.com</a>
-  </p>
-
-  <div class="foot">
-    <a href="https://github.com/ShrekBytes" target="_blank" rel="noopener">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.78 1.2 1.78 1.2 1.03 1.77 2.71 1.26 3.37.97.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.3-.52-1.48.11-3.08 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.6.23 2.78.11 3.08.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
-      github.com/ShrekBytes
-    </a>
   </div>
 
 </div>
@@ -364,6 +422,8 @@ function toast(msg){
   clearTimeout(tid);
   tid=setTimeout(()=>t.classList.remove('on'),1800);
 }
+
+document.querySelector('.nav a.active').addEventListener('click',e=>e.preventDefault());
 </script>
 </body>
 </html>
